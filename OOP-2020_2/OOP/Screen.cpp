@@ -2,8 +2,12 @@
 #include <iostream>
 using namespace std;
 
+Screen* Screen::instance = nullptr;
+
 Screen::Screen(int width, int height)
-	:m_width(width),m_height(height + 1),m_buffer(new char[m_width*m_height])
+	:m_width(width+1),
+	m_height(height),
+	m_buffer(new char[m_width*m_height])
 {
 }
 
@@ -25,10 +29,9 @@ void Screen::Clear()
 
 void Screen::Render()
 {
-	for (int i = 0; i < m_width; i++) m_buffer[m_width * i + m_height] = '\n';
+	for (int i = 0; i < m_height; i++) m_buffer[m_width * i + m_height] = '\n';
 	m_buffer[m_width * m_height] = '\0';
 
-	for (int i = 0; i < m_width*m_height; i++)
-		cout << m_buffer[i];
+	cout << m_buffer;
 
 }
