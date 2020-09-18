@@ -9,7 +9,7 @@ public:
 	static Screen* GetInstance()
 	{
 		if (!instance)			
-			instance = new Screen(10,10);
+			instance = new Screen(80,20);
 
 		//static 지역변수 사용
 		//static Screen* screen = new Screen(10,10);
