@@ -105,7 +105,7 @@ int main()
 		}
 
 
-		screen->Draw( x, y, '0' + x);
+		//screen->Draw( x, y, '0' + x);
 		Borland::gotoxy(0, 0);
 		screen->Render();
 

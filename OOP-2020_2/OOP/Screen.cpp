@@ -24,9 +24,9 @@ void Screen::Draw( int x, int y, char s)
 
 void Screen::Clear()
 {
-	memset(m_buffer, ' ', m_width * m_height);
+	memset(m_buffer, '#', m_width * m_height);
 }
-
+//¡Ü
 void Screen::Render()
 {
 	for (int i = 0; i < m_height; i++) m_buffer[m_width * i + m_height] = '\n';
