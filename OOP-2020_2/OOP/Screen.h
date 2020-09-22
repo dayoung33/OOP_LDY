@@ -1,6 +1,7 @@
 #pragma once
 class Screen
 {
+private:
 	//Singleton
 	Screen(int width, int height);
 
