@@ -30,7 +30,7 @@ void Screen::IndexDraw(int index, char s)
 
 void Screen::Clear()
 {
-	memset(m_buffer, '#', m_width * m_height);
+	memset(m_buffer, '0', m_width * m_height);
 }
 
 void Screen::Render()

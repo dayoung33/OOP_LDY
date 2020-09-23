@@ -17,9 +17,15 @@ public:
 	~MineSweeper();
 
 public:
-	int GetData(int index);
-	void SetMine();
+	void	InitMine();
+	void	GameLoop(int x_pos, int y_pos);
+	int		GetData(int index);	
 
+private:
+	bool	PosCheck(int x_pos, int y_pos);
+	void	SetMine();
+	int		MineNumCheck(int x_pos, int y_pos);
+	void	SetNum();
 private:
 	static MineSweeper* instance;
 
