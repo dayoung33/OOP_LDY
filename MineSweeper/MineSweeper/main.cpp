@@ -27,7 +27,6 @@ int main()
 	minesweeper->InitMine();
 
 	bool requestExit = false;
-	char* temp = nullptr;
 	int previousX = 0, previousY = 0;
 	int x = 0, y = 0;
 
@@ -42,11 +41,22 @@ int main()
 		for (int i = 0; i < 81; i++) {
 			if (minesweeper->GetData(i) == 9)
 				screen->Draw(i%9,i/9, '@');
-			else if (minesweeper->GetData(i) > 0) {
-				_itoa_s(minesweeper->GetData(i),temp,sizeof(temp),10);
-				//sprintf(temp, "%d", minesweeper->GetData(i));
-				screen->Draw(i % 9, i / 9, *temp);
-			}
+			else if (minesweeper->GetData(i) == 1) 		
+				screen->Draw(i % 9, i / 9, '1');		
+			else if (minesweeper->GetData(i) == 2) 
+				screen->Draw(i % 9, i / 9, '2');			
+			else if (minesweeper->GetData(i) == 3) 
+				screen->Draw(i % 9, i / 9, '3');			
+			else if (minesweeper->GetData(i) == 4) 
+				screen->Draw(i % 9, i / 9, '4');			
+			else if (minesweeper->GetData(i) == 5) 
+				screen->Draw(i % 9, i / 9, '5');
+			else if (minesweeper->GetData(i) == 6) 
+				screen->Draw(i % 9, i / 9, '6');
+			else if (minesweeper->GetData(i) == 7) 
+				screen->Draw(i % 9, i / 9, '7');
+			else if (minesweeper->GetData(i) == 8)
+				screen->Draw(i % 9, i / 9, '8');
 		}
 
 		inputMgr->InputEvent();

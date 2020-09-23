@@ -33,17 +33,92 @@ int MineSweeper::GetData(int index)
 	return m_buffer[index];
 }
 
-int MineSweeper::MineNumCheck(int x_pos, int y_pos)
+int MineSweeper::MineNumCheck(int index)
 {
 	int mineCnt = 0;
-	if (PosCheck(x_pos - 1, y_pos - 1))mineCnt++;
-	if (PosCheck(x_pos - 1, y_pos))mineCnt++;
-	if (PosCheck(x_pos - 1, y_pos + 1))mineCnt++;
-	if (PosCheck(x_pos, y_pos + 1))mineCnt++;
-	if (PosCheck(x_pos, y_pos - 1))mineCnt++;
-	if (PosCheck(x_pos + 1, y_pos - 1))mineCnt++;
-	if (PosCheck(x_pos + 1, y_pos))mineCnt++;
-	if (PosCheck(x_pos + 1, y_pos + 1))mineCnt++;
+	int lt = index - (m_width + 1),
+		t = index - m_width,
+		rt = index - (m_width - 1),
+		l = index - 1,
+		r = index + 1,
+		lb = index + (m_width - 1),
+		b = index + m_width,
+		rb = index + (m_width + 1);
+
+	if (index == 0)//0
+	{
+		if (m_buffer[r]== 9) mineCnt++;
+		if (m_buffer[b] == 9) mineCnt++;
+		if (m_buffer[rb] == 9) mineCnt++;
+		return mineCnt;
+	}
+	if (index == m_width - 1)//8
+	{
+		if (m_buffer[l] == 9) mineCnt++;
+		if (m_buffer[lb] == 9) mineCnt++;
+		if (m_buffer[b] == 9) mineCnt++;
+		return mineCnt;
+	}
+	if (index == ((m_width*m_height) - m_width))//72
+	{
+		if (m_buffer[t] == 9) mineCnt++;
+		if (m_buffer[rt] == 9) mineCnt++;
+		if (m_buffer[r] == 9) mineCnt++;
+		return mineCnt;
+	}
+	if (index == ((m_width*m_height)-1))//80
+	{
+		if (m_buffer[lt] == 9) mineCnt++;
+		if (m_buffer[t] == 9) mineCnt++;
+		if (m_buffer[r] == 9) mineCnt++;
+		return mineCnt;
+	}
+
+	if (index < m_width)//1~7
+	{
+		if (m_buffer[l] == 9) mineCnt++;
+		if (m_buffer[r] == 9) mineCnt++;
+		if (m_buffer[lb] == 9) mineCnt++;
+		if (m_buffer[b] == 9) mineCnt++;
+		if (m_buffer[rb] == 9) mineCnt++;
+		return mineCnt;
+	}
+	if (index % m_width == 0)//9,18,27...
+	{
+		if (m_buffer[t] == 9) mineCnt++;
+		if (m_buffer[rt] == 9) mineCnt++;
+		if (m_buffer[r] == 9) mineCnt++;
+		if (m_buffer[b] == 9) mineCnt++;
+		if (m_buffer[rb] == 9) mineCnt++;
+		return mineCnt;
+	}
+	if (index % m_width == (m_width-1))//17,26,35...
+	{
+		if (m_buffer[lt] == 9) mineCnt++;
+		if (m_buffer[t] == 9) mineCnt++;
+		if (m_buffer[r] == 9) mineCnt++;
+		if (m_buffer[lb] == 9) mineCnt++;
+		if (m_buffer[b] == 9) mineCnt++;
+		return mineCnt;
+	}
+	if (index > ((m_width*m_height) - m_width))//73,74,75...
+	{
+		if (m_buffer[lt] == 9) mineCnt++;
+		if (m_buffer[t] == 9) mineCnt++;
+		if (m_buffer[rt] == 9) mineCnt++;
+		if (m_buffer[l] == 9) mineCnt++;
+		if (m_buffer[r] == 9) mineCnt++;
+		return mineCnt;
+	}
+
+	if (m_buffer[lt] == 9) mineCnt++;
+	if (m_buffer[t] == 9) mineCnt++;
+	if (m_buffer[rt] == 9) mineCnt++;
+	if (m_buffer[l] == 9) mineCnt++;
+	if (m_buffer[r] == 9) mineCnt++;
+	if (m_buffer[lb] == 9) mineCnt++;
+	if (m_buffer[b] == 9) mineCnt++;
+	if (m_buffer[rb] == 9) mineCnt++;
 
 	return mineCnt;
 }
@@ -52,20 +127,13 @@ void MineSweeper::SetNum()
 {
 	for (int i = 0; i < m_width*m_height; i++)
 	{
-		if (m_buffer[i] == 0)
+		if (m_buffer[i] != 9)
 		{
-			m_buffer[i] = MineNumCheck(i % m_width, i / m_height);
+			m_buffer[i] = MineNumCheck(i);
 		}
 	}
 }
 
-bool MineSweeper::PosCheck(int x_pos, int y_pos)
-{
-	if (x_pos < 0 || x_pos >= m_width || y_pos < 0 || y_pos <= m_height)
-		return false;
-
-	return (m_buffer[y_pos * m_width + x_pos] == 9);
-}
 
 void MineSweeper::SetMine()
 {
@@ -93,9 +161,4 @@ void MineSweeper::SetMine()
 		m_buffer[data[i]] = 9;
 		printf("%d  ", data[i]);
 	}
-}
-
-void MineSweeper::GameLoop(int x_pos, int y_pos)
-{
-
 }
