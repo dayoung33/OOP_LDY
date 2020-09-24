@@ -26,6 +26,8 @@ public:
 	void IndexDraw(int index, char s);
 	void Clear();
 	void Render();
+	char GetChar(int x, int y);
+	int  GetCheckNum();
 
 private:
 	static Screen* instance;
@@ -33,5 +35,7 @@ private:
 	int m_width;
 	int m_height;
 	char* m_buffer;
+	int m_checkCnt;
+
 };
 

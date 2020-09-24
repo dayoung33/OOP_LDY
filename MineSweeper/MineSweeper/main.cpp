@@ -19,10 +19,12 @@
 int main()
 {
 	Borland::initialize();
-	Screen* screen = Screen::GetInstance(9,9);
+	Screen* screen = Screen::GetInstance(10,10);
 	InputManager* inputMgr = InputManager::GetInstance();
 	inputMgr->SetScreen(screen);
-	MineSweeper* minesweeper = MineSweeper::GetInstance(9,9);
+	MineSweeper* minesweeper = MineSweeper::GetInstance(10,10);
+	minesweeper->SetScreen(screen);
+	inputMgr->SetMineSweeper(minesweeper);
 	Borland::gotoxy(20, 0);
 	minesweeper->InitMine();
 
@@ -38,28 +40,12 @@ int main()
 		Borland::gotoxy(0, 0);
 		screen->Render();
 
-		for (int i = 0; i < 81; i++) {
-			if (minesweeper->GetData(i) == 9)
-				screen->Draw(i%9,i/9, '@');
-			else if (minesweeper->GetData(i) == 1) 		
-				screen->Draw(i % 9, i / 9, '1');		
-			else if (minesweeper->GetData(i) == 2) 
-				screen->Draw(i % 9, i / 9, '2');			
-			else if (minesweeper->GetData(i) == 3) 
-				screen->Draw(i % 9, i / 9, '3');			
-			else if (minesweeper->GetData(i) == 4) 
-				screen->Draw(i % 9, i / 9, '4');			
-			else if (minesweeper->GetData(i) == 5) 
-				screen->Draw(i % 9, i / 9, '5');
-			else if (minesweeper->GetData(i) == 6) 
-				screen->Draw(i % 9, i / 9, '6');
-			else if (minesweeper->GetData(i) == 7) 
-				screen->Draw(i % 9, i / 9, '7');
-			else if (minesweeper->GetData(i) == 8)
-				screen->Draw(i % 9, i / 9, '8');
-		}
-
 		inputMgr->InputEvent();
+
+		Borland::gotoxy(20, 1);
+		printf("±ê¹ß °³¼ö : %d \n", screen->GetCheckNum());
+		Borland::gotoxy(20, 2);
+		printf("Ã£Àº Áö·Ú : %d \n", minesweeper->GetFindMineNum());
 
 		Sleep(100);	
 	}

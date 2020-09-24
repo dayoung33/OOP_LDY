@@ -7,6 +7,7 @@ Screen* Screen::instance = nullptr;
 Screen::Screen(int width, int height)
 	:m_width(width),
 	m_height(height),
+	m_checkCnt(0),
 	m_buffer(new char[m_width*m_height])
 {
 }
@@ -48,3 +49,20 @@ void Screen::Render()
 	}
 	
 }
+
+char Screen::GetChar(int x, int y)
+{
+	return m_buffer[y * m_width + x];
+}
+
+int Screen::GetCheckNum()
+{
+	m_checkCnt = 0;
+	for (int i = 0; i < m_width*m_height; i++)
+	{
+		if (m_buffer[i] == '*')
+			m_checkCnt++;
+	}
+	return m_checkCnt;
+}
+

@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 class Screen;
+class MineSweeper;
 class InputManager
 {
 private:
@@ -20,6 +21,7 @@ public:
 public:	
 	void InputEvent();
 	void SetScreen(Screen* _screen);
+	void SetMineSweeper(MineSweeper* _mine);
 private:
 	VOID ErrorExit(const char *);
 	VOID KeyEventProc(KEY_EVENT_RECORD);
@@ -29,6 +31,7 @@ private:
 private:
 	static InputManager* instance;
 	Screen* screen;
+	MineSweeper* mine;
 	HANDLE hStdin;
 	DWORD fdwSaveOldMode;
 	DWORD cNumRead, fdwMode;

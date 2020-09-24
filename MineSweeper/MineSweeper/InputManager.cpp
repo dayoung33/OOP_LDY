@@ -2,6 +2,7 @@
 
 #include "Utils.h"
 #include "Screen.h"
+#include "MineSweeper.h"
 #include <stdio.h>
 
 InputManager* InputManager::instance = nullptr;
@@ -74,6 +75,11 @@ void InputManager::SetScreen(Screen * _screen)
 	screen = _screen;
 }
 
+void InputManager::SetMineSweeper(MineSweeper * _mine)
+{
+	mine = _mine;
+}
+
 VOID InputManager::ErrorExit(const char *lpszMessage)
 {
 	Borland::gotoxy(0, 22);
@@ -117,11 +123,22 @@ VOID InputManager::MouseEventProc(MOUSE_EVENT_RECORD mer)
 		if (mer.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED)
 		{
 			printf("left button press \n");
-			screen->Draw(mer.dwMousePosition.X, mer.dwMousePosition.Y, ' ');
+			if (screen->GetChar(mer.dwMousePosition.X, mer.dwMousePosition.Y) != ' ')
+			{
+				mine->GameLoop(mer.dwMousePosition.X, mer.dwMousePosition.Y);
+			}
 		}
 		else if (mer.dwButtonState == RIGHTMOST_BUTTON_PRESSED)
 		{
 			printf("right button press \n");
+			if (screen->GetChar(mer.dwMousePosition.X, mer.dwMousePosition.Y) != '*') {
+				screen->Draw(mer.dwMousePosition.X, mer.dwMousePosition.Y, '*');
+				mine->CheckMine(mer.dwMousePosition.X, mer.dwMousePosition.Y,true);
+			}
+			else {
+				screen->Draw(mer.dwMousePosition.X, mer.dwMousePosition.Y, '0');
+				mine->CheckMine(mer.dwMousePosition.X, mer.dwMousePosition.Y,false);
+			}
 		}
 		else
 		{

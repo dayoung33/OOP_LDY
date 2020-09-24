@@ -1,4 +1,5 @@
 #include "MineSweeper.h"
+#include "Screen.h"
 #include <iostream>
 #include <time.h>
 
@@ -9,6 +10,7 @@ MineSweeper::MineSweeper(int width, int height)
 	:m_width(width),
 	m_height(height),
 	m_mineCnt(10),
+	m_foundMine(0),
 	m_buffer(new int[m_width*m_height])
 {
 	memset(m_buffer, 0, m_width * m_height);
@@ -28,9 +30,77 @@ void MineSweeper::InitMine()
 	SetNum();
 }
 
+void MineSweeper::SetScreen(Screen* _screen)
+{
+	screen = _screen;
+}
+
 int MineSweeper::GetData(int index)
 {
 	return m_buffer[index];
+}
+
+int MineSweeper::GetFindMineNum()
+{
+	m_foundMine = 0;
+	for (int i = 0; i < m_width*m_height; i++)
+	{
+		if (m_buffer[i] == -1)
+			m_foundMine++;
+	}
+	return m_foundMine;
+}
+
+void MineSweeper::CheckMine(int xpos, int ypos, bool check)
+{
+	if (check) 
+	{
+		if (m_buffer[xpos + (ypos*m_width)] == 9)
+		{
+			m_buffer[xpos + (ypos*m_width)] = -1;
+		}
+	}
+	else
+	{
+		if (m_buffer[xpos + (ypos*m_width)] == -1)
+		{
+			m_buffer[xpos + (ypos*m_width)] = 9;
+
+		}
+	}
+}
+
+void MineSweeper::GameLoop(int xpos, int ypos)
+{
+	int index = xpos + (ypos * m_width);
+
+	if (m_buffer[index] == 9)
+	{
+		for (int i = 0; i < m_width*m_height; i++)
+		{
+			if (m_buffer[i] == 9)
+				screen->IndexDraw(i, '@');
+		}
+		return;
+	}
+	if (m_buffer[index] > 0)
+	{
+		screen->IndexDraw(index, m_buffer[index] + 48);
+		return;
+	}
+	if (m_buffer[index] == 0)
+	{
+		screen->IndexDraw(index, ' ');
+		if (Bomb(xpos - 1, ypos - 1)){GameLoop(xpos - 1, ypos - 1);}	//Spread to left upper diagonal ¢Ø
+		if (Bomb(xpos - 1, ypos + 1)){GameLoop(xpos - 1, ypos + 1);}	//Spread across the upper right diagonal ¢Ö
+		if (Bomb(xpos + 1, ypos - 1)){GameLoop(xpos + 1, ypos - 1);}	//Spread to left lower diagonal ¢×
+		if (Bomb(xpos + 1, ypos + 1)){GameLoop(xpos + 1, ypos + 1);}	//Spread across the lower right diagonal ¢Ù
+		if (Bomb(xpos - 1, ypos)) { GameLoop(xpos - 1, ypos); }//Spread up ¡è
+		if (Bomb(xpos + 1, ypos)) { GameLoop(xpos + 1, ypos); }//Spread down ¡é
+		if (Bomb(xpos, ypos - 1)) { GameLoop(xpos, ypos - 1); }//Spread left ¡ç
+		if (Bomb(xpos, ypos + 1)) { GameLoop(xpos, ypos + 1); }//Spread to the right ¡æ
+		return;
+	}
 }
 
 int MineSweeper::MineNumCheck(int index)
@@ -135,6 +205,15 @@ void MineSweeper::SetNum()
 }
 
 
+int MineSweeper::Bomb(int x, int y)
+{
+	int flag = 1;
+	if(m_buffer[x+(y*m_width)] == 9) { flag = 0; }
+	if (x < 0 || y < 0) { flag = 0; }
+	if (x >= m_width || y >= m_height) { flag = 0; }
+	return flag;
+}
+
 void MineSweeper::SetMine()
 {
 	int data[100];
@@ -158,7 +237,7 @@ void MineSweeper::SetMine()
 
 	for (int i = 0; i < m_mineCnt; i++)
 	{
-		m_buffer[data[i]] = 9;
-		printf("%d  ", data[i]);
+		m_buffer[data[i]] = 9;		
 	}
+	printf("Áö·Ú °³¼ö :%d  ", m_mineCnt);
 }
