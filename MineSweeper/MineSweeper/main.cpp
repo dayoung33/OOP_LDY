@@ -24,13 +24,15 @@ int main()
 	inputMgr->SetScreen(screen);
 	MineSweeper* minesweeper = MineSweeper::GetInstance(10,10);
 	minesweeper->SetScreen(screen);
-	inputMgr->SetMineSweeper(minesweeper);
 	Borland::gotoxy(20, 0);
 	minesweeper->InitMine();
+	inputMgr->SetMineSweeper(minesweeper);
+
 
 	bool requestExit = false;
 	int previousX = 0, previousY = 0;
 	int x = 0, y = 0;
+	double playtime = 0;
 
 
 	screen->Clear();
@@ -40,12 +42,24 @@ int main()
 		Borland::gotoxy(0, 0);
 		screen->Render();
 
-		inputMgr->InputEvent();
-
-		Borland::gotoxy(20, 1);
-		printf("±ê¹ß °³¼ö : %d \n", screen->GetCheckNum());
-		Borland::gotoxy(20, 2);
-		printf("Ã£Àº Áö·Ú : %d \n", minesweeper->GetFindMineNum());
+		if (!minesweeper->GetOver()&&!minesweeper->GetClear()) {
+			inputMgr->InputEvent();
+			Borland::gotoxy(20, 1);
+			printf("±ê¹ß °³¼ö : %d \n", screen->GetCheckNum());
+			Borland::gotoxy(20, 3);
+			printf("Time : %.2f", playtime);
+			if (inputMgr->GetStart())
+				playtime += 0.1f;
+		}
+		else if(minesweeper->GetOver()){
+			Borland::gotoxy(20, 4);
+			printf("GameOver", screen->GetCheckNum());
+		}
+		else if (minesweeper->GetClear())
+		{
+			Borland::gotoxy(20, 4);
+			printf("GameClear!!!!!", screen->GetCheckNum());
+		}
 
 		Sleep(100);	
 	}

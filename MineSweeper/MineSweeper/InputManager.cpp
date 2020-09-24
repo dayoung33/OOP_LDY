@@ -21,6 +21,8 @@ InputManager::InputManager()
 	fdwMode = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT;
 	if (!SetConsoleMode(hStdin, fdwMode))
 		ErrorExit("SetConsoleMode");
+
+	start = false;
 }
 
 InputManager::~InputManager()
@@ -122,6 +124,7 @@ VOID InputManager::MouseEventProc(MOUSE_EVENT_RECORD mer)
 
 		if (mer.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED)
 		{
+			start = true;
 			printf("left button press \n");
 			if (screen->GetChar(mer.dwMousePosition.X, mer.dwMousePosition.Y) != ' ')
 			{

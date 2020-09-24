@@ -6,15 +6,10 @@ private:
 	Screen(int width, int height);
 
 public:
-	//stctic Screen& GetInstance()
 	static Screen* GetInstance(int width, int height)
 	{
 		if (!instance)			
 			instance = new Screen(width, height);
-
-		//static 지역변수 사용
-		//static Screen* screen = new Screen(10,10);
-		//return *screen
 
 		return instance;
 	}

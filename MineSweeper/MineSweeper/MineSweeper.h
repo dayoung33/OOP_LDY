@@ -22,18 +22,26 @@ public:
 	void	SetScreen(Screen* _screen);
 	int		GetData(int index);	
 	int		GetFindMineNum();
+	bool	GetOver();
+	bool	GetClear();
 	void	CheckMine(int xpos, int ypos, bool check);
 	void	GameLoop(int xpos, int ypos);
+
 private:
-	int		Bomb(int x, int y);
+	void	DoubleCheck(int x, int y);
+	void    TripleCheck(int x, int y);
+	void	QuadCheck(int x, int y);
+	bool	Bomb(int x, int y);
 	void	SetMine();
 	int		MineNumCheck(int index);
 	void	SetNum();
+
 private:
 	static MineSweeper* instance;
 	Screen* screen;
-	int* m_buffer;
+	int* m_buffer; 
 
+	bool gameover;
 	int m_mineCnt;
 	int m_foundMine;
 	int m_width;

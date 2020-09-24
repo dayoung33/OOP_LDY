@@ -5,12 +5,12 @@
 
 MineSweeper* MineSweeper::instance = nullptr;
 
-
 MineSweeper::MineSweeper(int width, int height)
 	:m_width(width),
 	m_height(height),
 	m_mineCnt(10),
 	m_foundMine(0),
+	gameover(false),
 	m_buffer(new int[m_width*m_height])
 {
 	memset(m_buffer, 0, m_width * m_height);
@@ -51,6 +51,16 @@ int MineSweeper::GetFindMineNum()
 	return m_foundMine;
 }
 
+bool MineSweeper::GetOver()
+{
+	return gameover;
+}
+
+bool MineSweeper::GetClear()
+{
+	return m_mineCnt == GetFindMineNum();
+}
+
 void MineSweeper::CheckMine(int xpos, int ypos, bool check)
 {
 	if (check) 
@@ -65,7 +75,6 @@ void MineSweeper::CheckMine(int xpos, int ypos, bool check)
 		if (m_buffer[xpos + (ypos*m_width)] == -1)
 		{
 			m_buffer[xpos + (ypos*m_width)] = 9;
-
 		}
 	}
 }
@@ -81,6 +90,7 @@ void MineSweeper::GameLoop(int xpos, int ypos)
 			if (m_buffer[i] == 9)
 				screen->IndexDraw(i, '@');
 		}
+		gameover = true;
 		return;
 	}
 	if (m_buffer[index] > 0)
@@ -90,15 +100,32 @@ void MineSweeper::GameLoop(int xpos, int ypos)
 	}
 	if (m_buffer[index] == 0)
 	{
-		screen->IndexDraw(index, ' ');
-		if (Bomb(xpos - 1, ypos - 1)){GameLoop(xpos - 1, ypos - 1);}	//Spread to left upper diagonal ¢Ø
-		if (Bomb(xpos - 1, ypos + 1)){GameLoop(xpos - 1, ypos + 1);}	//Spread across the upper right diagonal ¢Ö
-		if (Bomb(xpos + 1, ypos - 1)){GameLoop(xpos + 1, ypos - 1);}	//Spread to left lower diagonal ¢×
-		if (Bomb(xpos + 1, ypos + 1)){GameLoop(xpos + 1, ypos + 1);}	//Spread across the lower right diagonal ¢Ù
-		if (Bomb(xpos - 1, ypos)) { GameLoop(xpos - 1, ypos); }//Spread up ¡è
-		if (Bomb(xpos + 1, ypos)) { GameLoop(xpos + 1, ypos); }//Spread down ¡é
-		if (Bomb(xpos, ypos - 1)) { GameLoop(xpos, ypos - 1); }//Spread left ¡ç
-		if (Bomb(xpos, ypos + 1)) { GameLoop(xpos, ypos + 1); }//Spread to the right ¡æ
+		screen->Draw(xpos, ypos, ' ');
+		if (Bomb(xpos - 1, ypos - 1))	{
+			DoubleCheck(xpos - 1, ypos - 1);
+		}	// ¢Ø
+		 if (Bomb(xpos - 1, ypos + 1))	{
+			 DoubleCheck(xpos - 1, ypos + 1);
+		 }	// ¢× 
+		 if (Bomb(xpos + 1, ypos - 1))	{
+			 DoubleCheck(xpos + 1, ypos - 1);
+		 }	// ¢Ö
+		 if (Bomb(xpos + 1, ypos + 1))	{ 
+			 DoubleCheck(xpos + 1, ypos + 1);
+		 }	// ¢Ù
+		 if (Bomb(xpos - 1, ypos))		{	 
+			 DoubleCheck(xpos - 1, ypos);
+		 }// ¡ç
+		 if (Bomb(xpos + 1, ypos))		{ 
+			 DoubleCheck(xpos + 1, ypos);
+		 }// ¡æ
+		 if (Bomb(xpos, ypos - 1))		{ 
+			 DoubleCheck(xpos , ypos - 1);
+		 }// ¡è
+		 if (Bomb(xpos, ypos + 1))		{
+			 DoubleCheck(xpos, ypos + 1);
+		 }// ¡é
+
 		return;
 	}
 }
@@ -205,12 +232,86 @@ void MineSweeper::SetNum()
 }
 
 
-int MineSweeper::Bomb(int x, int y)
+void MineSweeper::DoubleCheck(int x, int y)
 {
-	int flag = 1;
-	if(m_buffer[x+(y*m_width)] == 9) { flag = 0; }
-	if (x < 0 || y < 0) { flag = 0; }
-	if (x >= m_width || y >= m_height) { flag = 0; }
+	if (m_buffer[x + m_width * y] == 0){
+		screen->Draw(x, y, ' ');
+		if (Bomb(x - 1, y - 1)) {
+			TripleCheck(x - 1, y - 1);
+		}	// ¢Ø
+		if (Bomb(x - 1, y + 1)) {
+			TripleCheck(x - 1, y + 1);
+		}	// ¢× 
+		if (Bomb(x + 1, y - 1)) {
+			TripleCheck(x + 1, y - 1);
+		}	// ¢Ö
+		if (Bomb(x + 1, y + 1)) {
+			TripleCheck(x + 1, y + 1);
+		}	// ¢Ù
+		if (Bomb(x - 1, y)) {
+			TripleCheck(x - 1, y);
+		}// ¡ç
+		if (Bomb(x + 1, y)) {
+			TripleCheck(x + 1, y);
+		}// ¡æ
+		if (Bomb(x, y - 1)) {
+			TripleCheck(x, y - 1);
+		}// ¡è
+		if (Bomb(x, y + 1)) {
+			TripleCheck(x, y + 1);
+		}// ¡é
+	}
+	else if (m_buffer[x+ m_width * y] < 9)
+		screen->Draw(x, y, m_buffer[x + m_width * y] + 48);
+}
+void MineSweeper::TripleCheck(int x, int y)
+{
+	if (m_buffer[x + m_width * y] == 0) {
+		screen->Draw(x, y, ' ');
+		if (Bomb(x - 1, y - 1)) {
+			QuadCheck(x - 1, y - 1);
+		}	// ¢Ø
+		if (Bomb(x - 1, y + 1)) {
+			QuadCheck(x - 1, y + 1);
+		}	// ¢× 
+		if (Bomb(x + 1, y - 1)) {
+			QuadCheck(x + 1, y - 1);
+		}	// ¢Ö
+		if (Bomb(x + 1, y + 1)) {
+			QuadCheck(x + 1, y + 1);
+		}	// ¢Ù
+		if (Bomb(x - 1, y)) {
+			QuadCheck(x - 1, y);
+		}// ¡ç
+		if (Bomb(x + 1, y)) {
+			QuadCheck(x + 1, y);
+		}// ¡æ
+		if (Bomb(x, y - 1)) {
+			QuadCheck(x, y - 1);
+		}// ¡è
+		if (Bomb(x, y + 1)) {
+			QuadCheck(x, y + 1);
+		}// ¡é
+	}
+	else if (m_buffer[x + m_width * y] < 9)
+		screen->Draw(x, y, m_buffer[x + m_width * y] + 48);
+}
+void MineSweeper::QuadCheck(int x, int y)
+{
+	if (m_buffer[x + m_width * y] == 0) {
+		screen->Draw(x, y, ' ');
+	}
+	else if (m_buffer[x + m_width * y] < 9)
+		screen->Draw(x, y, m_buffer[x + m_width * y] + 48);
+}
+
+bool MineSweeper::Bomb(int x, int y)
+{
+	bool flag = true;
+	if (x < 0 || y < 0) 
+		flag = false; 
+	if (x >= m_width || y >= m_height) 
+		flag = false; 
 	return flag;
 }
 

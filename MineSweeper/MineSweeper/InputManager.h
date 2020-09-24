@@ -22,6 +22,7 @@ public:
 	void InputEvent();
 	void SetScreen(Screen* _screen);
 	void SetMineSweeper(MineSweeper* _mine);
+	bool GetStart() { return start; }
 private:
 	VOID ErrorExit(const char *);
 	VOID KeyEventProc(KEY_EVENT_RECORD);
@@ -36,5 +37,7 @@ private:
 	DWORD fdwSaveOldMode;
 	DWORD cNumRead, fdwMode;
 	INPUT_RECORD irInBuf[128];
+
+	bool start;
 };
 
