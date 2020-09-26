@@ -2,39 +2,46 @@
 //
 #include <Windows.h>
 
-//#include <iostream>
+#include <iostream>
 #include <conio.h>
 #include <ctime>
 #include <cstdlib> // include malloc,
+#include <queue>
 
 #include "Utils.h"
 #include "Screen.h"
 #include "InputManager.h"
+#include "Block.h"
 
 #include <stdio.h>
 
-//using namespace std;
+using namespace std;
 
 int main()
 {
 	Borland::initialize();
-	Screen* screen = Screen::GetInstance();
-	InputManager* inputMgr = InputManager::GetInstance();
+	Screen* screen = Screen::getInstance();
+	InputManager* inputMgr = InputManager::getInstance();
+
 
 	bool requestExit = false;
 
 	int previousX = 0, previousY = 0;
 	int x = 0, y = 0;
+	Block block;
 
 	while (requestExit == false)		
 	{
-		screen->Clear();
+		screen->clear();
 
-		//screen->Draw( x, y, '0' + x);
-		Borland::gotoxy(0, 0);
-		screen->Render();
+		inputMgr->readInput();
 
-		inputMgr->InputEvent();
+		block.update();
+		block.draw();
+
+		screen->render();
+
+		inputMgr->consumeEvent();
 
 		Sleep(100);	
 	}

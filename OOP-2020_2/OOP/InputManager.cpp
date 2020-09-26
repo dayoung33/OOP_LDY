@@ -19,14 +19,23 @@ InputManager::InputManager()
 	fdwMode = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT;
 	if (!SetConsoleMode(hStdin, fdwMode))
 		ErrorExit("SetConsoleMode");
+
+	events.clear();
 }
 
 InputManager::~InputManager()
 {
 }
 
-void InputManager::InputEvent()
+void InputManager::readInput()
 {
+	DWORD cNumRead = 0;
+	DWORD nEvents;
+
+	if (!GetNumberOfConsoleInputEvents(hStdin, &nEvents)) return;
+	if (nEvents == 0) return;
+
+
 	if (!ReadConsoleInput(
 		hStdin,      // input buffer handle 
 		irInBuf,     // buffer to read into 
@@ -35,37 +44,35 @@ void InputManager::InputEvent()
 		ErrorExit("ReadConsoleInput");
 
 	// Dispatch the events to the appropriate handler. 
+	
+
 
 	for (int i = 0; i < cNumRead; i++)
 	{
-		switch (irInBuf[i].EventType)
-		{
-		case KEY_EVENT: // keyboard input 
-			KeyEventProc(irInBuf[i].Event.KeyEvent);
-			break;
-
-		case MOUSE_EVENT: // mouse input 
-			MouseEventProc(irInBuf[i].Event.MouseEvent);
-			break;
-
-		case WINDOW_BUFFER_SIZE_EVENT: // scrn buf. resizing 
-			ResizeEventProc(irInBuf[i].Event.WindowBufferSizeEvent);
-			break;
-
-		case FOCUS_EVENT:  // disregard focus events 
-
-		case MENU_EVENT:   // disregard menu events 
-			break;
-
-		default:
-			ErrorExit("Unknown event type");
-			break;
-		}
+		events.push_back(irInBuf[i]);
 	}
 	
 	Borland::gotoxy(0, 21);
-	printf("cNum  = %d" , cNumRead);
+	printf("cNum  = %d  queue size : %d" , cNumRead,events.size());
 
+}
+
+void InputManager::consumeEvent()
+{
+	if (events.empty()) return;
+
+	events.pop_front();
+}
+
+bool InputManager::getKeyDown(WORD ch)
+{
+	if (events.empty() == true) return false;
+	INPUT_RECORD& in = events.front();
+	if (in.EventType != KEY_EVENT) return false;
+	if (in.Event.KeyEvent.bKeyDown == TRUE) {
+		return in.Event.KeyEvent.wVirtualKeyCode == ch;
+	}
+	return false;
 }
 
 VOID InputManager::ErrorExit(const char *lpszMessage)

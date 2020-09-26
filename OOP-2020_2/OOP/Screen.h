@@ -6,15 +6,10 @@ private:
 	Screen(int width, int height);
 
 public:
-	//stctic Screen& GetInstance()
-	static Screen* GetInstance()
+	static Screen* getInstance()
 	{
 		if (!instance)			
-			instance = new Screen(10,10);
-
-		//static 지역변수 사용
-		//static Screen* screen = new Screen(10,10);
-		//return *screen
+			instance = new Screen(80,20);
 
 		return instance;
 	}
@@ -22,9 +17,10 @@ public:
 	~Screen();
 
 public:
-	void Draw( int x, int y, char s);
-	void Clear();
-	void Render();
+	void draw( int x, int y, char s);
+	void draw(int x, int y, const char* shape);
+	void clear();
+	void render();
 
 private:
 	static Screen* instance;

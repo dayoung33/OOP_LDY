@@ -1,5 +1,8 @@
 #pragma once
 #include <Windows.h>
+#include <queue>
+using namespace std;
+
 class InputManager
 {
 private:
@@ -7,7 +10,7 @@ private:
 	InputManager();
 
 public:
-	static InputManager* GetInstance()
+	static InputManager* getInstance()
 	{
 		if (!instance)
 			instance = new InputManager();		
@@ -17,7 +20,9 @@ public:
 	~InputManager();
 
 public:	
-	void InputEvent();
+	void readInput();
+	void consumeEvent();
+	bool getKeyDown(WORD ch);
 
 private:
 	VOID ErrorExit(const char *);
@@ -27,10 +32,12 @@ private:
 
 private:
 	static InputManager* instance;
-
 	HANDLE hStdin;
 	DWORD fdwSaveOldMode;
 	DWORD cNumRead, fdwMode;
 	INPUT_RECORD irInBuf[128];
+
+	deque<INPUT_RECORD> events;
+
 };
 
