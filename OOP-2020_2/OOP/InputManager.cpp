@@ -8,17 +8,10 @@ InputManager* InputManager::instance = nullptr;
 InputManager::InputManager()
 {
 	hStdin = GetStdHandle(STD_INPUT_HANDLE);
-	if (hStdin == INVALID_HANDLE_VALUE)
-		ErrorExit("GetStdHandle");
-
-	if (!GetConsoleMode(hStdin, &fdwSaveOldMode))
-		ErrorExit("GetConsoleMode");
-
-	// Enable the window and mouse input events. 
-
+	if (hStdin == INVALID_HANDLE_VALUE) return;
+	if (!GetConsoleMode(hStdin, &fdwSaveOldMode)) return;
 	fdwMode = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT;
-	if (!SetConsoleMode(hStdin, fdwMode))
-		ErrorExit("SetConsoleMode");
+	if (!SetConsoleMode(hStdin, fdwMode)) return;
 
 	events.clear();
 }

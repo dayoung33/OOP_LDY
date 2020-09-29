@@ -7,9 +7,9 @@ Screen* Screen::instance = nullptr;
 
 Screen::Screen(int width, int height)
 	:m_width(width+1),
-	m_height(height),
-	m_buffer(new char[m_width*m_height])
+	m_height(height)	
 {
+	m_buffer = new char[m_width * m_height];
 }
 
 Screen::~Screen()
@@ -35,11 +35,9 @@ void Screen::clear()
 
 void Screen::render()
 {
-
 	for (int i = 0; i < m_height; i++) m_buffer[m_width * i + m_height] = '\n';
 	m_buffer[m_width * m_height] = '\0';
 
 	Borland::gotoxy(0, 0);	
 	cout << m_buffer;
-
 }
