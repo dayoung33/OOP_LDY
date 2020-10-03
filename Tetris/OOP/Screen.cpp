@@ -43,25 +43,3 @@ void Screen::render()
 	cout << m_buffer;
 }
 
-void Screen::SetTable()
-{
-	const string& shape = "¢Ë";
-	const string& shape2 = "-";
-
-
-	for (int j = 0; j < m_height-1; j++) {			
-		draw(0, j, shape.c_str());
-	}
-	for (int j = 0; j < m_height-1; j++) {
-		draw(m_width-2, j, shape.c_str());
-	}
-	for (int j = 2; j < m_width-3; j++) {
-		if (j % 2 == 0)
-			draw(j, 4, shape2.c_str());
-	}
-	for (int j = 0; j < m_width-1; j++) {
-		if (j % 2 == 0)
-			draw(j, m_height-1, shape.c_str());
-	}
-
-}

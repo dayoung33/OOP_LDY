@@ -9,7 +9,7 @@ public:
 	static Screen* getInstance()
 	{
 		if (!instance)			
-			instance = new Screen(30,30);
+			instance = new Screen(22,22);
 
 		return instance;
 	}
@@ -21,12 +21,11 @@ public:
 	void draw(int x, int y, const char* shape);
 	void clear();
 	void render();
-	void SetTable();
 
-private:
-	//int getWidth() const { return m_width; }
+public:
+	int getWidth() const { return m_width; }
 	int getScreenWidth() const { return m_width + 1; }
-	//int getHeight() const { return m_height; }
+	int getHeight() const { return m_height; }
 	int getSize() const { return getScreenWidth()*m_height; }
 
 private:

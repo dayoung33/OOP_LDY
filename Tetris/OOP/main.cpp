@@ -12,6 +12,7 @@
 #include "Screen.h"
 #include "InputManager.h"
 #include "Block.h"
+#include "Table.h"
 
 #include <stdio.h>
 
@@ -22,32 +23,42 @@ int main()
 	Borland::initialize();
 	Screen* screen = Screen::getInstance();
 	InputManager* inputMgr = InputManager::getInstance();
-
+	Table* table = Table::getInstance();
 
 	bool requestExit = false;
 
 	int previousX = 0, previousY = 0;
 	int x = 0, y = 0;
-	Block block;
+	//Block block;
+	
 
 	while (requestExit == false)		
 	{
 		screen->clear();
-		screen->SetTable();
+		//screen->SetTable();
 
 		inputMgr->readInput();
 
-		block.update();
-		block.draw();
+		table->start();
+		table->update();
+		table->draw();
 
 		screen->render();
 
 		inputMgr->consumeEvent();
 
-		Sleep(10);	
+		Borland::gotoxy(30, 1);printf("+-----------+");
+		Borland::gotoxy(30, 2);printf("|           |");
+		Borland::gotoxy(30, 3);printf("| SCORE : %d |", table->getScore());
+		Borland::gotoxy(30, 4);printf("|           |");
+		Borland::gotoxy(30, 5);printf("| COMBO : %d |", table->getCombo());
+		Borland::gotoxy(30, 6);printf("|           |");
+		Borland::gotoxy(30, 7);printf("| LEVEL : %d |", table->getLevel());
+		Borland::gotoxy(30, 8);printf("|           |");
+		Borland::gotoxy(30, 9); printf("+-----------+");
+		Sleep(10);
 	}
 
 	printf("\n정상적으로 종료되었습니다.\n");
 	return 0;
 }
-	

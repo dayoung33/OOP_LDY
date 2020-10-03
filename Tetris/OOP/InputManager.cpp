@@ -28,7 +28,6 @@ void InputManager::readInput()
 	if (!GetNumberOfConsoleInputEvents(hStdin, &nEvents)) return;
 	if (nEvents == 0) return;
 
-
 	if (!ReadConsoleInput(
 		hStdin,      // input buffer handle 
 		irInBuf,     // buffer to read into 
@@ -36,16 +35,10 @@ void InputManager::readInput()
 		&cNumRead)) // number of records read 
 		ErrorExit("ReadConsoleInput");
 
-	// Dispatch the events to the appropriate handler. 
-	
-
-
 	for (int i = 0; i < cNumRead; i++)
-	{
 		events.push_back(irInBuf[i]);
-	}
 	
-	Borland::gotoxy(0, 21);
+	Borland::gotoxy(0, 23);
 	printf("cNum  = %d  queue size : %d" , cNumRead,events.size());
 
 }
@@ -70,7 +63,7 @@ bool InputManager::getKeyDown(WORD ch)
 
 VOID InputManager::ErrorExit(const char *lpszMessage)
 {
-	Borland::gotoxy(0, 22);
+	Borland::gotoxy(0, 24);
 	printf("%80\r", ' ');
 	fprintf(stderr, "%s\n", lpszMessage);
 
@@ -83,7 +76,7 @@ VOID InputManager::ErrorExit(const char *lpszMessage)
 
 VOID InputManager::KeyEventProc(KEY_EVENT_RECORD ker)
 {
-	Borland::gotoxy(0, 22);
+	Borland::gotoxy(0, 24);
 	printf("%80\r", ' ');
 
 	printf("Key event:  %c  %d             ", ker.uChar, ker.wRepeatCount);
@@ -99,7 +92,7 @@ VOID InputManager::MouseEventProc(MOUSE_EVENT_RECORD mer)
 #define MOUSE_HWHEELED 0x0008
 #endif
 
-	Borland::gotoxy(0, 22);
+	Borland::gotoxy(0, 24);
 	printf("%80\r", ' ');
 
 	printf("Mouse event: %d  %d         ", mer.dwMousePosition.X, mer.dwMousePosition.Y);
@@ -141,7 +134,7 @@ VOID InputManager::MouseEventProc(MOUSE_EVENT_RECORD mer)
 
 VOID InputManager::ResizeEventProc(WINDOW_BUFFER_SIZE_RECORD wbsr)
 {
-	Borland::gotoxy(0, 22);
+	Borland::gotoxy(0, 24);
 	printf("%80\r", ' ');
 
 	printf("Resize event\n");
