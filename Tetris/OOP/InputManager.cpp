@@ -38,8 +38,8 @@ void InputManager::readInput()
 	for (int i = 0; i < cNumRead; i++)
 		events.push_back(irInBuf[i]);
 	
-	Borland::gotoxy(0, 23);
-	printf("cNum  = %d  queue size : %d" , cNumRead,events.size());
+	//Borland::gotoxy(0, 23);
+	//printf("cNum  = %d  queue size : %d" , cNumRead,events.size());
 
 }
 

@@ -18,12 +18,18 @@
 
 using namespace std;
 
+Table* table = Table::getInstance();
+Screen* screen = Screen::getInstance();
+
+void scoreDraw();
+void GameOver();
+
 int main()
 {
 	Borland::initialize();
-	Screen* screen = Screen::getInstance();
+	
 	InputManager* inputMgr = InputManager::getInstance();
-	Table* table = Table::getInstance();
+
 
 	bool requestExit = false;
 
@@ -35,7 +41,9 @@ int main()
 	while (requestExit == false)		
 	{
 		screen->clear();
-		//screen->SetTable();
+
+		if (table->getOver())
+			break;
 
 		inputMgr->readInput();
 
@@ -47,18 +55,42 @@ int main()
 
 		inputMgr->consumeEvent();
 
-		Borland::gotoxy(30, 1);printf("+-----------+");
-		Borland::gotoxy(30, 2);printf("|           |");
-		Borland::gotoxy(30, 3);printf("| SCORE : %d |", table->getScore());
-		Borland::gotoxy(30, 4);printf("|           |");
-		Borland::gotoxy(30, 5);printf("| COMBO : %d |", table->getCombo());
-		Borland::gotoxy(30, 6);printf("|           |");
-		Borland::gotoxy(30, 7);printf("| LEVEL : %d |", table->getLevel());
-		Borland::gotoxy(30, 8);printf("|           |");
-		Borland::gotoxy(30, 9); printf("+-----------+");
+		scoreDraw();
+
 		Sleep(10);
+
 	}
 
-	printf("\n정상적으로 종료되었습니다.\n");
+	GameOver();
+
+	//printf("\n정상적으로 종료되었습니다.\n");
 	return 0;
+}
+
+void scoreDraw()
+{
+	Borland::gotoxy(30, 1); printf("+------------+");
+	Borland::gotoxy(30, 2); printf("|            |");
+	Borland::gotoxy(30, 3); printf("| SCORE :%3d |", table->getScore());
+	Borland::gotoxy(30, 4); printf("|            |");
+	Borland::gotoxy(30, 5); printf("| COMBO :%3d |", table->getCombo());
+	Borland::gotoxy(30, 6); printf("|            |");
+	Borland::gotoxy(30, 7); printf("| LEVEL :%3d |", table->getLevel());
+	Borland::gotoxy(30, 8); printf("|            |");
+	Borland::gotoxy(30, 9); printf("+------------+");
+}
+
+void GameOver()
+{
+	//screen->clear();
+	system("cls");
+	Borland::gotoxy(0, 1); printf("+------------+");
+	Borland::gotoxy(0, 2); printf("|            |");
+	Borland::gotoxy(0, 3); printf("|            |");
+	Borland::gotoxy(0, 4); printf("| GAME  OVER |");
+	Borland::gotoxy(0, 5); printf("|            |");
+	Borland::gotoxy(0, 6); printf("| SCORE :%3d |", table->getScore());
+	Borland::gotoxy(0, 7); printf("|            |");
+	Borland::gotoxy(0, 8); printf("|            |");
+	Borland::gotoxy(0, 9); printf("+------------+");
 }
