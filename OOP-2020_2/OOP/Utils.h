@@ -6,8 +6,49 @@
 struct Position {
 	int x;
 	int y;
+
 	Position(int x = 0, int y = 0) : x(x), y(y) {}
+	Position(const Position& other) : x(other.x), y(other.y) {} // copy constructor
+
+	Position operator+(const Position& other) const
+	{
+		return Position{ this->x + other.x, this->y + other.y };
+	}
+
+	Position operator-(const Position& other) const
+	{
+		return Position{ this->x - other.x, this->y - other.y };
+	}
+
+	Position& operator+=(const Position& source)
+	{
+		this->x += source.x; this->y += source.y;
+		return *this;
+	}
+
+	Position& operator=(const Position& source) {
+		this->x = source.x; this->y = source.y;
+		return *this;
+	}
+
+	const Position operator*(int scale) const {
+		return Position{ this->x*scale, this->y*scale };
+	}
+
+	const Position operator/(int scale) const {
+		if (scale == 0) return *this;
+		return Position{ (int)(this->x / scale), (int)(this->y / scale) };
+	}
+
+	static Position up;
+	static Position right;
+	static Position down;
+	static Position left;
+	static Position zeros;
+	static Position ones;
 };
+
+
 
 class Borland {
 
@@ -40,11 +81,11 @@ public:
 	static void gotoxy(const Position* pos)
 	{
 		if (!pos) return;
-		gotoxy( (*pos).x, (*pos).y);
+		gotoxy((*pos).x, (*pos).y);
 	}
 	static void gotoxy(const Position& pos)
 	{
-		gotoxy( pos.x, pos.y);
+		gotoxy(pos.x, pos.y);
 	}
 };
 

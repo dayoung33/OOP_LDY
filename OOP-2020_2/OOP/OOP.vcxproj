@@ -128,13 +128,19 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Panel.cpp" />
     <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="TextInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Panel.h" />
     <ClInclude Include="Screen.h" />
+    <ClInclude Include="Text.h" />
+    <ClInclude Include="TextInput.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -3,10 +3,13 @@
 class Block :
 	public GameObject
 {
+	Position size;
+
 public:
-	Block(int x = 5, int y = 5, const string& shape = "(^_^)");
+	Block(const Position& pos, const string& shape, const Position& size, GameObject* parent = nullptr);
 
 	void update() override;
+	void draw() override;
 
 };
 

@@ -1,18 +1,26 @@
 #include "InputManager.h"
 
 #include "Utils.h"
-#include <stdio.h>
+#include"Screen.h"
+#include <String>
+#include <iostream>
+using namespace std;
 
 InputManager* InputManager::instance = nullptr;
 
 InputManager::InputManager()
+	: hStdin(GetStdHandle(STD_INPUT_HANDLE)), irInBuf{ {0} }
 {
-	hStdin = GetStdHandle(STD_INPUT_HANDLE);
 	if (hStdin == INVALID_HANDLE_VALUE) return;
-	if (!GetConsoleMode(hStdin, &fdwSaveOldMode)) return;
-	fdwMode = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT;
-	if (!SetConsoleMode(hStdin, fdwMode)) return;
+	FlushConsoleInputBuffer(hStdin);
 
+	string mode = "mode con:cols=" + to_string(Screen::getInstance()->getWidth() + 10);
+	mode += " lines=" + to_string(Screen::getInstance()->getHeight() + 5);
+	std::system(mode.c_str());
+	std::system("chcp 437");
+
+	if (!GetConsoleMode(hStdin, &fdwSaveOldMode)) return;
+	if (!SetConsoleMode(hStdin, ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT)) return;
 	events.clear();
 }
 
@@ -28,32 +36,23 @@ void InputManager::readInput()
 	if (!GetNumberOfConsoleInputEvents(hStdin, &nEvents)) return;
 	if (nEvents == 0) return;
 
-
-	if (!ReadConsoleInput(
+	nEvents = min(nEvents, 128);
+	ReadConsoleInput(
 		hStdin,      // input buffer handle 
 		irInBuf,     // buffer to read into 
-		128,         // size of read buffer 
-		&cNumRead)) // number of records read 
-		ErrorExit("ReadConsoleInput");
+		nEvents,         // size of read buffer 
+		&cNumRead); // number of records read
 
 	// Dispatch the events to the appropriate handler. 
 	
-
-
 	for (int i = 0; i < cNumRead; i++)
-	{
 		events.push_back(irInBuf[i]);
-	}
 	
-	Borland::gotoxy(0, 21);
-	printf("cNum  = %d  queue size : %d" , cNumRead,events.size());
-
 }
 
 void InputManager::consumeEvent()
 {
 	if (events.empty()) return;
-
 	events.pop_front();
 }
 
@@ -83,8 +82,6 @@ VOID InputManager::ErrorExit(const char *lpszMessage)
 
 VOID InputManager::KeyEventProc(KEY_EVENT_RECORD ker)
 {
-	Borland::gotoxy(0, 22);
-	printf("%80\r", ' ');
 
 	printf("Key event:  %c  %d             ", ker.uChar, ker.wRepeatCount);
 

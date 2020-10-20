@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <vector>
+
 using namespace std;
 
 #include "Utils.h"
@@ -12,20 +14,42 @@ class GameObject
 	string shape;
 	Position pos;
 
+	Position parentPos; // your parent's global position in space
+	bool dirty; // mark it TRUE if your local position is changed.
+
 protected:
 	Screen& screen;
 	InputManager& inputManager;
 
+	vector<GameObject *> children;
+	GameObject* parent;
+
+	void setParentPos(const Position& parentPos) { this->parentPos = parentPos; }
+
 public:
-	GameObject(int x, int y, const string& shape);
+	GameObject(int x, int y, const string & shape, GameObject * parent);
+	GameObject(const Position & pos, const string & shape, GameObject * parent);
 	virtual ~GameObject() {}
 
-	void setPos(int x, int y) { pos.x = x; pos.y = y; }
-	void setPos(const Position& pos) { this->pos.x = pos.x; this->pos.y = pos.y; }
-	Position getPos() const { return pos; }
+	void add(GameObject* child);
 
-	virtual void update() {}
+	void setPos(int x, int y);
+	void setPos(const Position& pos);
+
+	Position getPos() const { return pos; }
+	Position getWorldPos() const { return parentPos + pos; }
+
+	const char* getShape() const { return shape.c_str(); }
+
+	void setParent(GameObject* parent);
+	
 	virtual void start() {}
+
+	void internalUpdatePos(bool dirty = false);
+	void internalUpdate();
+	void internalDraw();
+
+	virtual void update() {}	
 	virtual void draw();
 };
 

@@ -12,36 +12,64 @@
 #include "Screen.h"
 #include "InputManager.h"
 #include "Block.h"
+#include "Panel.h"
+#include "TextInput.h"
 
 #include <stdio.h>
 
 using namespace std;
 
+Position Position::up{ 0, 1 };
+Position Position::down{ 0, -1 };
+Position Position::right{ 1, 0 };
+Position Position::left{ -1, 0 };
+Position Position::zeros{ 0, 0 };
+Position Position::ones{ 1, 1 };
+
+
 int main()
 {
-	Borland::initialize();
-	Screen* screen = Screen::getInstance();
-	InputManager* inputMgr = InputManager::getInstance();
+	Screen& screen = *Screen::getInstance();
+	InputManager& inputMgr = *InputManager::getInstance();
+	vector<GameObject*> scene;
 
+	auto panel = new Panel{ "", Position{3,3}, 10, 20, nullptr };
+	new Block{ Position{4,0}, "\xdb  \xdb\xdb\xdb  \xdb", Position{ 3, 3},  panel };
+
+	auto panel2 = new Panel{ " Next", Position{20, 3}, 10, 5, nullptr };
+	new Block{ Position{5, 1}, "\xdb \xdb \xdb\xdb", Position{ 2, 3 }, panel2 };
+
+	auto panel3 = new Panel{ " Score", Position{20, 19}, 10, 4, nullptr };
+	int value = 0;
+	auto score = new TextInput{ Position{4, 2}, value, panel3 };
+
+	scene.push_back(panel);
+	scene.push_back(panel2);
+	scene.push_back(panel3);
 
 	bool requestExit = false;
 
-	int previousX = 0, previousY = 0;
-	int x = 0, y = 0;
-	Block block;
 
 	while (requestExit == false)		
 	{
-		screen->clear();
+		screen.clear();
 
-		inputMgr->readInput();
+		inputMgr.readInput();
 
-		block.update();
-		block.draw();
+		if (inputMgr.getKeyDown(VK_ESCAPE)) break;
 
-		screen->render();
+		if (inputMgr.getKeyDown(VK_SPACE)) {
+			value++;
+			score->setValue(value);
+		}
 
-		inputMgr->consumeEvent();
+		for (auto object : scene) object->internalUpdate();
+		for (auto object : scene) object->internalUpdatePos(false);
+		for (auto object : scene) object->internalDraw();
+
+		screen.render();
+
+		inputMgr.consumeEvent();
 
 		Sleep(100);	
 	}

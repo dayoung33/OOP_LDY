@@ -2,25 +2,20 @@
 #include "InputManager.h"
 #include "Screen.h"
 
-Block::Block(int x, int y, const string & shape)
-	: GameObject(x, y, shape)
-{
-}
+
+Block::Block(const Position & pos, const string & shape, const Position & size, GameObject * parent)
+	: GameObject(pos, shape, parent), size(size) {}
 
 void Block::update()
 {
 	Position pos = getPos();
-	if (inputManager.getKeyDown(VK_LEFT) == true) {
-		setPos(pos.x - 1, pos.y);
-	}
-	if (inputManager.getKeyDown(VK_RIGHT) == true) {
-		setPos(pos.x + 1, pos.y);
-	}
-	if (inputManager.getKeyDown(VK_UP) == true) {
-		setPos(pos.x, pos.y - 1);
-	}
-	if (inputManager.getKeyDown(VK_DOWN) == true) {
-		setPos(pos.x, pos.y + 1);
-	}
+	if (inputManager.getKeyDown(VK_DIVIDE)) setPos(pos + Position::left);
+	if (inputManager.getKeyDown(VK_MULTIPLY)) setPos(pos + Position::right);
+}
+
+void Block::draw()
+{
+	Position pos = getWorldPos();
+	screen.drawShape(pos, size, getShape());
 }
 
