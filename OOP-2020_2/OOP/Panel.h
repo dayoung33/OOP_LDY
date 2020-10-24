@@ -9,6 +9,9 @@ class Panel : public GameObject
 public:
 	Panel(const string& title, const Position& pos, int width, int height, GameObject* parent);
 
+	int getHeight() { return height; }
+	int getWidth() { return width; }
+
 	void update() override;
 	void draw() override;
 

@@ -30,7 +30,7 @@ InputManager::~InputManager()
 
 void InputManager::readInput()
 {
-	DWORD cNumRead = 0;
+	DWORD cNumRead;
 	DWORD nEvents;
 
 	if (!GetNumberOfConsoleInputEvents(hStdin, &nEvents)) return;
@@ -42,12 +42,9 @@ void InputManager::readInput()
 		irInBuf,     // buffer to read into 
 		nEvents,         // size of read buffer 
 		&cNumRead); // number of records read
-
-	// Dispatch the events to the appropriate handler. 
 	
 	for (int i = 0; i < cNumRead; i++)
 		events.push_back(irInBuf[i]);
-	
 }
 
 void InputManager::consumeEvent()
@@ -82,12 +79,10 @@ VOID InputManager::ErrorExit(const char *lpszMessage)
 
 VOID InputManager::KeyEventProc(KEY_EVENT_RECORD ker)
 {
-
-	printf("Key event:  %c  %d             ", ker.uChar, ker.wRepeatCount);
-
 	if (ker.bKeyDown)
 		printf("key pressed\n");
-	else printf("key released\n");
+	else
+		printf("key released\n");
 }
 
 VOID InputManager::MouseEventProc(MOUSE_EVENT_RECORD mer)
@@ -136,11 +131,3 @@ VOID InputManager::MouseEventProc(MOUSE_EVENT_RECORD mer)
 	}
 }
 
-VOID InputManager::ResizeEventProc(WINDOW_BUFFER_SIZE_RECORD wbsr)
-{
-	Borland::gotoxy(0, 22);
-	printf("%80\r", ' ');
-
-	printf("Resize event\n");
-	printf("Console screen buffer is %d columns by %d rows.\n", wbsr.dwSize.X, wbsr.dwSize.Y);
-}

@@ -12,17 +12,23 @@ private:
 	Screen(int width, int height);
 
 public:
-	static Screen* getInstance()
-	{
-		if (!instance)			
-			instance = new Screen(80,30);
-
+	static Screen* getInstance() {
+		if (instance == nullptr) {
+			instance = new Screen{ 80, 30 };
+		}
 		return instance;
 	}
 
 	~Screen();
 
 public:
+	int getWidth() const { return m_width; }
+	int getScreenWidth() const { return m_width + 1; }
+	int getHeight() const { return m_height; }
+	int getSize() const { return getScreenWidth()*m_height; }
+
+	void clear();
+
 	void draw( int x, int y, const char shape);
 	void draw(int x, int y, const char * shape, int len);
 	void draw(const Position& pos, char shape); 
@@ -32,13 +38,8 @@ public:
 	void drawLineVertical(const Position& pos, int height);
 	void drawRectangle(const Position& topLeft, const Position& sz);
 	void drawShape(const Position& pos, const Position& sz, const char* shape);
-	void clear();
-	void render();
 
-	int getWidth() const { return m_width; }
-	int getScreenWidth() const { return m_width + 1; }
-	int getHeight() const { return m_height; }
-	int getSize() const { return getScreenWidth()*m_height; }
+	void render();
 
 private:
 	static Screen* instance;

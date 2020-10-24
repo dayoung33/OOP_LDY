@@ -2,7 +2,7 @@
 
 Screen* Screen::instance = nullptr;
 
-Screen::Screen(int width, int height)
+Screen::Screen(int width = 10, int height = 10)
 	:m_width(width),
 	m_height(height), m_buffer{ new char[getSize()] }
 {
@@ -15,17 +15,21 @@ Screen::~Screen()
 	delete[] m_buffer;
 }
 
+void Screen::clear()
+{
+	memset(m_buffer, ' ', getSize()); m_buffer[getSize() - 1] = '\0';
+}
+
 void Screen::draw( int x, int y, const char shape)
 {
 	if (!m_buffer) return;
-	m_buffer[y * m_width + x] = shape;
+	m_buffer[y * getScreenWidth() + x] = shape;
 }
 
 void Screen::draw(int x, int y, const char * shape,int len)
 {
 	if (shape == nullptr || len == 0 || len > strlen(shape)) return;
 	strncpy(&m_buffer[y* getScreenWidth() + x], shape, len);
-	strncpy(&m_buffer[y* m_width + x], shape, strlen(shape));
 }
 
 void Screen::draw(const Position & pos, char shape)
@@ -68,12 +72,8 @@ void Screen::drawRectangle(const Position & topLeft, const Position & sz)
 void Screen::drawShape(const Position & pos, const Position & sz, const char * shape)
 {
 	if (shape == nullptr) return;
-	for (int i = 0; i < sz.y; i++) draw(pos.x, pos.y + i, &shape[i*sz.x], sz.x);
-}
-
-void Screen::clear()
-{
-	memset(m_buffer, ' ', m_width * m_height);
+	for (int i = 0; i < sz.y; i++) 
+		draw(pos.x, pos.y + i, &shape[i*sz.x], sz.x);
 }
 
 void Screen::render()

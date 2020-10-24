@@ -21,9 +21,15 @@ void GameObject::add(GameObject * child)
 	children.push_back(child);
 }
 
+void GameObject::del()
+{
+	if(!children.empty())
+		children.pop_back();
+}
+
 void GameObject::setPos(int x, int y)
 {
-	pos.x = x; pos.y = y;
+	setPos(Position{ x, y });
 }
 
 void GameObject::setPos(const Position & pos)
@@ -32,11 +38,17 @@ void GameObject::setPos(const Position & pos)
 	dirty = true;
 }
 
+void GameObject::setShape(const string & shape)
+{
+	this->shape = shape;
+}
+
 void GameObject::setParent(GameObject * parent)
 {
 	this->parent = parent;
 	setParentPos(parent ? parent->getWorldPos() : Position::zeros);
-	for (auto child : children) child->internalUpdatePos(true);
+	for (auto child : children)
+		child->internalUpdatePos(true);
 }
 
 void GameObject::internalUpdatePos(bool dirty)

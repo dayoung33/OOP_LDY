@@ -11,7 +11,6 @@ Table::Table()
 	:screen(*Screen::getInstance()),
 	inputManager(*InputManager::getInstance())
 {
-
 	blockList.push_back(new Block);
 	m_tableWidth = screen.getWidth();
 	m_tableHeight = screen.getHeight();
@@ -99,7 +98,7 @@ void Table::update()
 				table[j][i] = EMPTY;
 			for (auto iter = blockList.begin(); iter != blockList.end();)
 			{
-				if ((*iter)->getInactivePos() == i)			
+				if ((*iter)->getInactivePos() == i)			 
 					iter = blockList.erase(iter);
 				else {
 					(*iter)->setPos((*iter)->getPos().x, (*iter)->getPos().y + 1);

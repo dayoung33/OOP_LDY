@@ -32,6 +32,7 @@ public:
 	virtual ~GameObject() {}
 
 	void add(GameObject* child);
+	void del();
 
 	void setPos(int x, int y);
 	void setPos(const Position& pos);
@@ -40,6 +41,7 @@ public:
 	Position getWorldPos() const { return parentPos + pos; }
 
 	const char* getShape() const { return shape.c_str(); }
+	void setShape(const string& shape);
 
 	void setParent(GameObject* parent);
 	

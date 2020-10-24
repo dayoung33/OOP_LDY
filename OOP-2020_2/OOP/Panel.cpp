@@ -10,10 +10,6 @@ Panel::Panel(const string & title, const Position & pos, int width, int height, 
 void Panel::update()
 {
 	Position pos = getPos();
-	if (inputManager.getKeyDown(VK_LEFT)) setPos(pos + Position::left);
-	if (inputManager.getKeyDown(VK_RIGHT)) setPos(pos + Position::right);
-	if (inputManager.getKeyDown(VK_UP)) setPos(pos + Position::down);
-	if (inputManager.getKeyDown(VK_DOWN)) setPos(pos + Position::up);
 }
 
 void Panel::draw()
