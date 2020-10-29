@@ -121,7 +121,7 @@ class InputManager {
 		std::system(mode.c_str());
 		std::system("chcp 437");
 
-		if (!GetConsoleMode(hStdin, &fdwSaveOldMode)) return;		
+		if (!GetConsoleMode(hStdin, &fdwSaveOldMode)) return;
 		if (!SetConsoleMode(hStdin, ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT)) return;
 		events.clear();
 	}
@@ -143,7 +143,7 @@ class InputManager {
 	{
 		if (ker.bKeyDown)
 			printf("key pressed\n");
-		else 
+		else
 			printf("key released\n");
 	}
 
@@ -227,6 +227,22 @@ public:
 			&& (in.Event.MouseEvent.dwButtonState & RIGHTMOST_BUTTON_PRESSED);
 	}
 
+	bool GetMouseMove()
+	{
+		if (events.empty() == true) return false;
+		const INPUT_RECORD& in = events.front();
+		if (in.EventType != MOUSE_EVENT) return false;
+		return in.Event.MouseEvent.dwEventFlags == MOUSE_MOVED
+			&& (in.Event.MouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED);
+			
+	} 
+	Position GetMousePosition(Position OriginPos)
+	{
+		//if (GetLeftMouseDownandMove() == false) return OriginPos;
+		const INPUT_RECORD& in = events.front();
+		return Position(in.Event.MouseEvent.dwMousePosition.X, in.Event.MouseEvent.dwMousePosition.Y);
+	}
+
 
 
 	void readInputs() {
@@ -300,6 +316,7 @@ public:
 
 	Position getPos() const { return pos; }
 	Position getWorldPos() const { return parentPos + pos; }
+	Position getParentPos() const { return parentPos; }
 
 	const char* getShape() const { return shape.c_str(); }
 	void setShape(const string& shape) { this->shape = shape; }
@@ -360,6 +377,38 @@ public:
 		screen.draw(Position{ pos.x + 1, pos.y -1 }, title.c_str());
 	}
 };
+class Button : public GameObject {
+	Position size;
+	string title;
+	bool check;
+public:
+	Button(const Position& pos, const string& title, const Position& size, GameObject* parent = nullptr)
+		: GameObject(pos, "", parent), size(size),title(title),check(false) {}
+
+	~Button() {}
+		
+	void update() override
+	{
+		Position pos = getPos();
+		Position wpos = getWorldPos();
+
+		if (inputManager.GetLeftMouseDown())
+		{
+			Position mpos = inputManager.GetMousePosition(pos);
+			if (mpos.x > wpos.x&&mpos.x<wpos.x + size.x&&mpos.y>wpos.y&&mpos.y < wpos.y + size.y) {
+				check = true;
+			}				
+		}
+	}
+
+	void draw() override 
+	{
+		Position pos = getWorldPos();
+		screen.drawRectangle(Position{ pos.x - 1, pos.y - 1 }, Position{ size.x + 1, size.y + 1 });
+		if(check)
+			screen.draw(Position{ pos.x + (size.x/2), pos.y + (size.y / 2) }, title.c_str());
+	}
+};
 
 class Block : public GameObject {
 	Position size;
@@ -391,7 +440,25 @@ public:
 	void update() override
 	{
 		Position pos = getPos();
+		Position wpos = getWorldPos();
+		
 		if (inputManager.GetKeyDown(VK_UP)) rotateShape();
+	
+		if (inputManager.GetLeftMouseDown())
+		{
+			Position mpos = inputManager.GetMousePosition(pos);
+			if (mpos.x > wpos.x&&mpos.x<wpos.x + size.x&&mpos.y>wpos.y&&mpos.y < wpos.y + size.y) {
+				rotatable = false;
+			}
+			else
+				rotatable = true;
+		}
+
+		if (inputManager.GetMouseMove()&&!rotatable)
+		{			
+			setPos(inputManager.GetMousePosition(pos) - getParentPos());
+		}
+
 	}
 
 	void draw() override
@@ -411,6 +478,7 @@ public:
 	void update() override
 	{
 		Position pos = getPos();
+
 	}	
 };
 
@@ -425,8 +493,12 @@ public:
 	void update() override
 	{
 		Position pos = getPos();
-		if (inputManager.GetLeftMouseDown()) setPos(pos + Position::left);
-		if (inputManager.GetRightMouseDown()) setPos(pos + Position::right);
+		//if (inputManager.GetMouseMove())
+		//{
+		//	setPos(inputManager.GetMousePosition(pos) - getParentPos());
+		//}
+		//if (inputManager.GetLeftMouseDown()) setPos(pos + Position::left);
+		//if (inputManager.GetRightMouseDown()) setPos(pos + Position::right);
 	}
 
 	void draw() override
@@ -450,7 +522,8 @@ int main()
 
 	auto panel = new Panel{ "", Position{3,3}, 10, 20, nullptr };
 	new Block{ Position{4,0}, "\xdb  \xdb\xdb\xdb  \xdb", Position{ 3, 3}, panel };
-	new Block{ Position{10,0}, "\xdb\xdb \xdb\xdb\xdb", Position{ 2, 3},  panel };
+	//new Block{ Position{10,0}, "\xdb\xdb \xdb\xdb\xdb", Position{ 2, 3},  panel };
+	new Button{ Position{10,0}, "X", Position{ 6, 3},  panel };
 
 	auto nextPanel = new Panel{ " Next", Position{20, 3}, 10, 5, nullptr };
 	new Block{ Position{5, 1}, "\xdb \xdb \xdb\xdb", Position{ 2, 3 }, nextPanel, false };
@@ -469,7 +542,16 @@ int main()
 
 		inputManager.readInputs();
 
-		if (inputManager.GetKeyDown(VK_ESCAPE)) break;
+		if (inputManager.GetKeyDown(VK_ESCAPE))
+		{
+			auto overPanel = new Panel{ "", Position{1, 1}, 50, 26, nullptr };
+			for (int i = 0; i < 26; i++)
+				new Text{ Position{0, i}, "                                           ", overPanel };
+			new Button{ Position{31,0}, "-", Position{ 6, 3},  overPanel };
+			new Button{ Position{38,0}, "\xdb\xdb", Position{ 6, 3},  overPanel };
+			new Button{ Position{45,0}, "X", Position{ 6, 3},  overPanel };
+			scene.push_back(overPanel);
+		}
 
 		if (inputManager.GetKeyDown(VK_SPACE)) {
 			value++;
