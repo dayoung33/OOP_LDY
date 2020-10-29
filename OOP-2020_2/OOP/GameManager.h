@@ -24,10 +24,15 @@ public:
 	void update();
 	void start();
 	void draw();
+	bool getOver();
 
 private:
 	void drawTable();
-	void CreateBlock();
+	void createBlock();
+	void createGameOverPanel();
+	void restart();
+	void creatPausePanel();
+	void replay();
 
 private:
 	static GameManager* instance;
@@ -43,6 +48,12 @@ private:
 
 	int randomNum;
 	int value = 0;
+	bool overPanelinit;
+	bool restartInit;
+	bool pausePanelInit;
+	bool replayInit;
+	bool isPause;
+
 
 };
 

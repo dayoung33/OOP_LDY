@@ -12,17 +12,18 @@
 #include "Screen.h"
 #include "InputManager.h"
 #include "GameManager.h"
-
+#include "Panel.h"
+#include "Text.h"
 #include <stdio.h>
 
 using namespace std;
 
-Position Position::up{ 0, -1 };
-Position Position::down{ 0, 1 };
-Position Position::right{ 1, 0 };
-Position Position::left{ -1, 0 };
-Position Position::zeros{ 0, 0 };
-Position Position::ones{ 1, 1 };
+Position Position::up	{  0, -1 };
+Position Position::down	{  0,  1 };
+Position Position::right{  1,  0 };
+Position Position::left	{ -1,  0 };
+Position Position::zeros{  0,  0 };
+Position Position::ones	{  1,  1 };
 
 
 int main()
@@ -50,6 +51,7 @@ int main()
 
 		Sleep(100);	
 	}
+
 
 	printf("\n정상적으로 종료되었습니다.\n");
 	return 0;
