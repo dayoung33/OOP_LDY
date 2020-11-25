@@ -9,7 +9,6 @@ class PanelScript : public Component {
 	Transform* transform;
 
 public:
-
 	PanelScript(GameObject* gameObject);
 	void start() override;
 	void update() override;

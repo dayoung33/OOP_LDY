@@ -16,9 +16,13 @@ void GameObject::internalUpdate() {
 }
 
 
-void GameObject::internalDraw() {
+void GameObject::internalDraw() {	
+	for (auto component : components)
+	{
+		if(component->getHiddenflag()==false)
+			component->draw();
+	}
 	if (hideFlag == true) return;
-	for (auto component : components) component->draw();
 	for (auto child : children) child->internalDraw();
 }
 

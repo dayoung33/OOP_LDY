@@ -1,0 +1,24 @@
+﻿  Block.cpp
+  GameManager.cpp
+  GameObject.cpp
+  GameTable.cpp
+  InputManager.cpp
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\inputmanager.cpp(46): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\inputmanager.cpp(70): warning C4778: 'printf' : 서식 문자열 '%80\r'이(가) 종결되지 않았습니다.
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\inputmanager.cpp(70): warning C4474: 'printf' : 서식 문자열에 전달된 인수가 너무 많습니다.
+  c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\inputmanager.cpp(70): note: 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\inputmanager.cpp(95): warning C4778: 'printf' : 서식 문자열 '%80\r'이(가) 종결되지 않았습니다.
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\inputmanager.cpp(95): warning C4474: 'printf' : 서식 문자열에 전달된 인수가 너무 많습니다.
+  c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\inputmanager.cpp(95): note: 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
+  main.cpp
+  Panel.cpp
+  Screen.cpp
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\screen.cpp(42): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\screen.cpp(53): warning C4309: '인수': 상수 값이 잘립니다.
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\screen.cpp(59): warning C4309: '인수': 상수 값이 잘립니다.
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\screen.cpp(68): warning C4309: '인수': 상수 값이 잘립니다.
+c:\users\rkek3\documents\oop_ldy\oop-2020_2\oop\screen.cpp(69): warning C4309: '인수': 상수 값이 잘립니다.
+  Text.cpp
+  TextInput.cpp
+  코드를 생성하고 있습니다...
+  OOP.vcxproj -> C:\Users\rkek3\Documents\OOP_LDY\OOP-2020_2\x64\Debug\OOP.exe
