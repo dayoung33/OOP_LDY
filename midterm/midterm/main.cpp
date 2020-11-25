@@ -21,7 +21,7 @@ class Screen {
 
 	Screen(int w = 10, int h = 10)
 		: width(w), height(h), buffer{ new char[getSize()] }
-	{	
+	{
 		Borland::initialize();
 		buffer[getSize() - 1] = '\0';
 	}
@@ -43,11 +43,11 @@ public:
 	int getHeight() const { return height; }
 	int getSize() const { return getScreenWidth()*height; }
 
-	void clear() { memset(buffer, ' ', getSize()); buffer[getSize() - 1] = '\0';  }
+	void clear() { memset(buffer, ' ', getSize()); buffer[getSize() - 1] = '\0'; }
 
 	void draw(int x, int y, const char shape) { buffer[y* getScreenWidth() + x] = shape; }
 	void draw(int x, int y, const char* shape, int len) {
-		if (shape == nullptr || len == 0 || len > strlen(shape) ) return;
+		if (shape == nullptr || len == 0 || len > strlen(shape)) return;
 		strncpy(&buffer[y* getScreenWidth() + x], shape, len);
 	}
 	void draw(const Position& pos, char shape) { draw(pos.x, pos.y, shape); }
@@ -59,7 +59,7 @@ public:
 	}
 	void drawLineVertical(const Position& pos, int height) {
 		if (pos.x < 0 || pos.y < 0 || pos.x > getWidth() || pos.y + height > getHeight()) return;
-		for (int i = pos.y; i <= min(this->height,  pos.y + height); i++) draw(pos.x, i, 179);
+		for (int i = pos.y; i <= min(this->height, pos.y + height); i++) draw(pos.x, i, 179);
 	}
 	void drawRectangle(const Position& topLeft, const Position& sz) {
 		drawLineHorizontal(topLeft, sz.x);
@@ -72,12 +72,12 @@ public:
 	void drawShape(const Position& pos, const Position& sz, const char* shape)
 	{
 		if (shape == nullptr) return;
-		for (int i = 0; i < sz.y; i++) draw(pos.x, pos.y+i, &shape[i*sz.x], sz.x);
+		for (int i = 0; i < sz.y; i++) draw(pos.x, pos.y + i, &shape[i*sz.x], sz.x);
 	}
 
 	void render()
 	{
-		for (int y = 0; y < height - 1; y++) 
+		for (int y = 0; y < height - 1; y++)
 			draw(width, y, '\n');
 		draw(width - 1, height, '\0');
 
@@ -152,7 +152,7 @@ class InputManager {
 #ifndef MOUSE_HWHEELED
 #define MOUSE_HWHEELED 0x0008
 #endif
-		Borland::gotoxy(0, 29);
+		Borland::gotoxy(0, 22);
 		printf("%80d\r", ' ');
 
 		printf("Mouse event: %d %d      ", mer.dwMousePosition.X, mer.dwMousePosition.Y);
@@ -226,24 +226,11 @@ public:
 		return in.Event.MouseEvent.dwEventFlags == 0
 			&& (in.Event.MouseEvent.dwButtonState & RIGHTMOST_BUTTON_PRESSED);
 	}
-
-	bool GetMouseMove()
+	Position GetMousePosition()
 	{
-		if (events.empty() == true) return false;
-		const INPUT_RECORD& in = events.front();
-		if (in.EventType != MOUSE_EVENT) return false;
-		return in.Event.MouseEvent.dwEventFlags == MOUSE_MOVED
-			&& (in.Event.MouseEvent.dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED);
-			
-	} 
-	Position GetMousePosition(Position OriginPos)
-	{
-		//if (GetLeftMouseDownandMove() == false) return OriginPos;
 		const INPUT_RECORD& in = events.front();
 		return Position(in.Event.MouseEvent.dwMousePosition.X, in.Event.MouseEvent.dwMousePosition.Y);
 	}
-
-
 
 	void readInputs() {
 		DWORD cNumRead;
@@ -274,6 +261,9 @@ class GameObject {
 	string shape;
 	Position pos;
 
+	bool hidden;
+	Position collision; //충돌영역사이즈
+
 	Position parentPos; // your parent's global position in space
 	bool dirty; // mark it TRUE if your local position is changed.
 
@@ -284,22 +274,26 @@ protected:
 	vector<GameObject *> children;
 	GameObject* parent;
 
-	void setParentPos(const Position& parentPos) { this->parentPos = parentPos; }	
+	void setParentPos(const Position& parentPos) { this->parentPos = parentPos; }
 
 public:
-	GameObject(int x, int y, const string& shape, GameObject* parent = nullptr)
+	GameObject(int x, int y, const string& shape, GameObject* parent = nullptr, const Position& collision = { 1,1 })
 		: shape(shape), screen(*Screen::getInstance()),
 		inputManager(*InputManager::getInstance()),
-		pos(x, y), parent(parent), dirty(false)
+		pos(x, y), parent(parent), dirty(false), hidden(false), collision(collision)
 	{
 		setParentPos(parent ? parent->getWorldPos() : Position::zeros);
 		if (parent) parent->add(this);
-		
+
 		start();
 	}
 
-	GameObject(const Position& pos, const string& shape, GameObject* parent = nullptr) 
+	GameObject(const Position& pos, const string& shape, GameObject* parent = nullptr)
 		: GameObject(pos.x, pos.y, shape, parent) {}
+
+	GameObject(const Position& pos, const string& shape, const Position& collision, GameObject* parent = nullptr)
+		: GameObject(pos.x, pos.y, shape, parent, collision) {}
+
 
 	virtual ~GameObject() {}
 
@@ -309,14 +303,13 @@ public:
 	}
 
 	void setPos(int x, int y) { setPos(Position{ x, y }); }
-	void setPos(const Position& pos) { 
+	void setPos(const Position& pos) {
 		this->pos.x = pos.x; this->pos.y = pos.y;
 		dirty = true;
 	}
 
 	Position getPos() const { return pos; }
 	Position getWorldPos() const { return parentPos + pos; }
-	Position getParentPos() const { return parentPos; }
 
 	const char* getShape() const { return shape.c_str(); }
 	void setShape(const string& shape) { this->shape = shape; }
@@ -326,6 +319,24 @@ public:
 		setParentPos(parent ? parent->getWorldPos() : Position::zeros);
 		for (auto child : children) child->internalUpdatePos(true);
 	}
+	// Hidden setting
+	void setHidden(bool hidden) { this->hidden = hidden; }
+	bool getHidden() { return hidden; }
+
+	//Collision Check
+	Position getCollision() { return collision; }
+
+	bool checkCollision(Position colpos)
+	{
+		Position pos = getPos();
+
+		//pointCollision
+		if (colpos.x > pos.x&&colpos.x<pos.x + collision.x
+			&&colpos.y>pos.y&&colpos.y < pos.y + collision.y)
+			return true;
+
+		return false;
+	}
 
 	virtual void start() {}
 
@@ -333,37 +344,109 @@ public:
 		bool inheritedDirty = dirty;
 		if (inheritedDirty == false) {
 			if (this->dirty == true) inheritedDirty = true;
-		} else {
+		}
+		else {
 			if (parent) setParentPos(parent->getWorldPos());
 		}
-		
+
 		for (auto child : children) child->internalUpdatePos(inheritedDirty);
 		this->dirty = false;
 	}
 
 	void internalUpdate() {
 		update();
+		if (hidden)
+			for (auto child : children) child->setHidden(true);
 		for (auto child : children) child->internalUpdate();
 	}
 	virtual void update() {}
 
-	void internalDraw() { 
-		draw();
-		for (auto child : children) child->internalDraw();
+	//hidden 일때 안그림 자식도 전부
+	void internalDraw() {
+		if (!hidden) {
+			draw();
+			for (auto child : children)
+			{
+				child->internalDraw();
+			}
+		}
 	}
 	virtual void draw() { screen.draw(getWorldPos(), shape.c_str()); }
+};
+
+//Clickable class
+
+class Clickable : public GameObject {
+	string title;
+public:
+	Clickable(const Position& pos, const string& title, const Position& collision, GameObject* parent)
+		:GameObject(pos, "", collision, parent), title(title) {}
+
+	virtual void OnClick() = 0;
+
+	void update() override
+	{
+		if (inputManager.GetLeftMouseDown())
+		{
+			if (checkCollision(inputManager.GetMousePosition()))
+				OnClick();
+		}
+	}
+
+	void draw() override
+	{
+		Position pos = getPos();
+		Position col = getCollision();
+		screen.drawRectangle(Position{ pos.x - 1, pos.y - 1 }, Position{ col.x + 1, col.y + 1 });
+		screen.draw(Position{ pos.x + (col.x / 2), pos.y + (col.y / 2) }, title.c_str());
+	}
+};
+
+// RestoreButton class
+
+class RestoreButton : public Clickable {
+public:
+	RestoreButton(const Position& pos, const string& title, const Position& collision, GameObject* parent)
+		:Clickable(pos, title, collision, parent) {}
+	// Clickable을(를) 통해 상속됨
+	virtual void OnClick() override
+	{
+		parent->setHidden(false);
+	}
+	void update() override
+	{
+		
+	}
+};
+
+// MinimizeLcon class
+
+class MinimizeLcon : public Clickable {
+public:
+	MinimizeLcon(const Position& pos, const Position& collision, GameObject* parent)
+		:Clickable(pos, "-", collision, parent) {}
+	// Clickable을(를) 통해 상속됨
+	virtual void OnClick() override
+	{
+		parent->setHidden(true);
+	}
 };
 
 class Panel : public GameObject {
 	int width;
 	int height;
 	string title;
-	
+
 public:
-	Panel(const string& title, const Position& pos, int width, int height, GameObject* parent) 
-		: GameObject(pos, "", parent), 
+	Panel(const string& title, const Position& pos, int width, int height, GameObject* parent)
+		: GameObject(pos, "", parent),
 		width(width), height(height), title(title)
-	{}
+	{
+		//mininizeIcon 생성 
+		new MinimizeLcon{ Position{getPos().x + width + 2 ,getPos().y}, Position{ 6, 3},  this };
+		new RestoreButton{ Position{getPos().x + width - 1 ,getPos().y + height},title, Position{ 10, 3},  nullptr };
+	}
+
 
 	void update() override
 	{
@@ -371,42 +454,10 @@ public:
 	}
 
 	void draw() override
-	{	
+	{
 		Position pos = getWorldPos();
 		screen.drawRectangle(Position{ pos.x - 1, pos.y - 1 }, Position{ width + 2, height + 2 });
-		screen.draw(Position{ pos.x + 1, pos.y -1 }, title.c_str());
-	}
-};
-class Button : public GameObject {
-	Position size;
-	string title;
-	bool check;
-public:
-	Button(const Position& pos, const string& title, const Position& size, GameObject* parent = nullptr)
-		: GameObject(pos, "", parent), size(size),title(title),check(false) {}
-
-	~Button() {}
-		
-	void update() override
-	{
-		Position pos = getPos();
-		Position wpos = getWorldPos();
-
-		if (inputManager.GetLeftMouseDown())
-		{
-			Position mpos = inputManager.GetMousePosition(pos);
-			if (mpos.x > wpos.x&&mpos.x<wpos.x + size.x&&mpos.y>wpos.y&&mpos.y < wpos.y + size.y) {
-				check = true;
-			}				
-		}
-	}
-
-	void draw() override 
-	{
-		Position pos = getWorldPos();
-		screen.drawRectangle(Position{ pos.x - 1, pos.y - 1 }, Position{ size.x + 1, size.y + 1 });
-		if(check)
-			screen.draw(Position{ pos.x + (size.x/2), pos.y + (size.y / 2) }, title.c_str());
+		screen.draw(Position{ pos.x + 1, pos.y - 1 }, title.c_str());
 	}
 };
 
@@ -431,7 +482,7 @@ class Block : public GameObject {
 
 public:
 	Block(const Position& pos, const string& shape, const Position& size, GameObject* parent = nullptr, bool rotatable = true)
-		: GameObject(pos, shape, parent), size(size), internalShapeData(new char[size.x*size.y+1]), rotatable(rotatable) {}
+		: GameObject(pos, shape, parent), size(size), internalShapeData(new char[size.x*size.y + 1]), rotatable(rotatable) {}
 
 	~Block() {
 		if (internalShapeData != nullptr) delete[] internalShapeData;
@@ -440,25 +491,7 @@ public:
 	void update() override
 	{
 		Position pos = getPos();
-		Position wpos = getWorldPos();
-		
 		if (inputManager.GetKeyDown(VK_UP)) rotateShape();
-	
-		if (inputManager.GetLeftMouseDown())
-		{
-			Position mpos = inputManager.GetMousePosition(pos);
-			if (mpos.x > wpos.x&&mpos.x<wpos.x + size.x&&mpos.y>wpos.y&&mpos.y < wpos.y + size.y) {
-				rotatable = false;
-			}
-			else
-				rotatable = true;
-		}
-
-		if (inputManager.GetMouseMove()&&!rotatable)
-		{			
-			setPos(inputManager.GetMousePosition(pos) - getParentPos());
-		}
-
 	}
 
 	void draw() override
@@ -478,8 +511,7 @@ public:
 	void update() override
 	{
 		Position pos = getPos();
-
-	}	
+	}
 };
 
 class TextInput : public GameObject {
@@ -493,10 +525,6 @@ public:
 	void update() override
 	{
 		Position pos = getPos();
-		//if (inputManager.GetMouseMove())
-		//{
-		//	setPos(inputManager.GetMousePosition(pos) - getParentPos());
-		//}
 		//if (inputManager.GetLeftMouseDown()) setPos(pos + Position::left);
 		//if (inputManager.GetRightMouseDown()) setPos(pos + Position::right);
 	}
@@ -518,20 +546,18 @@ int main()
 {
 	Screen& screen = *Screen::getInstance();
 	InputManager& inputManager = *InputManager::getInstance();
-	vector<GameObject*> scene;	
+	vector<GameObject*> scene;
 
 	auto panel = new Panel{ "", Position{3,3}, 10, 20, nullptr };
 	new Block{ Position{4,0}, "\xdb  \xdb\xdb\xdb  \xdb", Position{ 3, 3}, panel };
-	//new Block{ Position{10,0}, "\xdb\xdb \xdb\xdb\xdb", Position{ 2, 3},  panel };
-	new Button{ Position{10,0}, "X", Position{ 6, 3},  panel };
+	new Block{ Position{4,4}, "\xdb\xdb \xdb\xdb\xdb", Position{ 2, 3},  panel };
 
-	auto nextPanel = new Panel{ " Next", Position{20, 3}, 10, 5, nullptr };
+	auto nextPanel = new Panel{ " Next", Position{24, 3}, 10, 5, nullptr };
 	new Block{ Position{5, 1}, "\xdb \xdb \xdb\xdb", Position{ 2, 3 }, nextPanel, false };
 
-	auto scorePanel = new Panel{ " Score", Position{20, 19}, 10, 4, nullptr };
+	auto scorePanel = new Panel{ " Score", Position{24, 19}, 10, 4, nullptr };
 	int value = 0;
 	auto score = new TextInput{ Position{4, 2}, value, scorePanel };
-
 	scene.push_back(panel);
 	scene.push_back(nextPanel);
 	scene.push_back(scorePanel);
@@ -542,16 +568,7 @@ int main()
 
 		inputManager.readInputs();
 
-		if (inputManager.GetKeyDown(VK_ESCAPE))
-		{
-			auto overPanel = new Panel{ "", Position{1, 1}, 50, 26, nullptr };
-			for (int i = 0; i < 26; i++)
-				new Text{ Position{0, i}, "                                           ", overPanel };
-			new Button{ Position{31,0}, "-", Position{ 6, 3},  overPanel };
-			new Button{ Position{38,0}, "\xdb\xdb", Position{ 6, 3},  overPanel };
-			new Button{ Position{45,0}, "X", Position{ 6, 3},  overPanel };
-			scene.push_back(overPanel);
-		}
+		if (inputManager.GetKeyDown(VK_ESCAPE)) break;
 
 		if (inputManager.GetKeyDown(VK_SPACE)) {
 			value++;
@@ -565,7 +582,7 @@ int main()
 		screen.render();
 
 		inputManager.consumeEvent();
-		
+
 		Sleep(100);
 	}
 	printf("\nTerminated Successfully.\n");
