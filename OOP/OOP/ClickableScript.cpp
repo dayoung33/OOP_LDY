@@ -10,7 +10,6 @@ ClickableScript::ClickableScript(GameObject * gameObject)
 
 void ClickableScript::start()
 {
-	restores.reserve(3);
 	size = getTransform()->getSize();
 	pos = Position{ getTransform()->getPosition().x +size.x,getTransform()->getPosition().y };
 }
@@ -26,7 +25,6 @@ void ClickableScript::update()
 
 void ClickableScript::draw()
 {
-	if (getHiddenflag() == true)return;
 	getScreen().drawRectangle(Position{ pos.x + 1, pos.y - 1 }, Position{ 5, 2 });
 	getScreen().draw(Position{ pos.x +4 , pos.y }, "-");
 }

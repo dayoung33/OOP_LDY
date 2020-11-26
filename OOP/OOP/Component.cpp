@@ -3,7 +3,7 @@
 #include "Transform.h"
 
 Component::Component(GameObject* gameObject)
-	: gameObject(gameObject),hideFlag(false)
+	: gameObject(gameObject)
 {	
 }
 
@@ -13,7 +13,3 @@ InputManager& Component::getInputManager() const { return gameObject->inputManag
 
 Screen & Component::getScreen() const { return gameObject->screen; }
 
-void Component::setHiddenflag(bool flag)
-{
-	hideFlag = flag;
-}

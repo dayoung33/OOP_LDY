@@ -6,7 +6,6 @@ class Screen;
 
 class Component
 {
-	bool		hideFlag;
 protected:
 
 	GameObject* gameObject;
@@ -17,8 +16,6 @@ public:
 	Transform* getTransform() const;
 	InputManager& getInputManager() const;
 	Screen& getScreen() const;
-	void setHiddenflag(bool flag);
-	bool getHiddenflag() { return hideFlag; }
 
 	virtual void start() {}
 	virtual void update() {}

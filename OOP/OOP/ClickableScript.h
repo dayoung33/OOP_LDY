@@ -2,7 +2,6 @@
 #include "Component.h"
 #include "Utils.h"
 #include <string>
-#include <vector>
 using namespace std;
 
 class ClickableScript : public Component
@@ -20,7 +19,6 @@ public:
 	void draw() override;
 
 protected:
-	vector<ClickableScript*> restores;
 	virtual void onClick() = 0;
 	void setPos(Position pos);
 };

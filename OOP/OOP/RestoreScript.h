@@ -6,6 +6,7 @@ public:
 	RestoreScript(GameObject* gameObject);
 
 	void start() override;
+	void draw() override;
 
 	bool isMatching(GameObject* associated);
 	void show();

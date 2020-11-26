@@ -12,11 +12,11 @@ void MinimizeScript::onClick()
 	if (gameObject == nullptr) return;
 	gameObject->setHiddenflag(true);
 
-	for (auto obj : restores) {
-		auto restore = dynamic_cast<RestoreScript*>(obj);
-		if (restore == nullptr) continue;
-		if (restore->isMatching(gameObject)) {
-			restore->show();
-		}
-	}
+	//for (auto obj : restores) {
+	//	auto restore = dynamic_cast<RestoreScript*>(obj);
+	//	if (restore == nullptr) continue;
+	//	if (restore->isMatching(gameObject)) {
+	//		restore->show();
+	//	}
+	//}
 }
