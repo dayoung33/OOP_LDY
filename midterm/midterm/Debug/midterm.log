@@ -1,7 +1,7 @@
 ﻿  main.cpp
-c:\users\rkek3\documents\oop_ldy\midterm\midterm\main.cpp(113): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\rkek3\documents\oop_ldy\midterm\midterm\main.cpp(121): warning C4309: '인수': 상수 값이 잘립니다.
-c:\users\rkek3\documents\oop_ldy\midterm\midterm\main.cpp(125): warning C4309: '인수': 상수 값이 잘립니다.
-c:\users\rkek3\documents\oop_ldy\midterm\midterm\main.cpp(132): warning C4309: '인수': 상수 값이 잘립니다.
-c:\users\rkek3\documents\oop_ldy\midterm\midterm\main.cpp(133): warning C4309: '인수': 상수 값이 잘립니다.
-  midterm.vcxproj -> C:\Users\rkek3\Documents\OOP_LDY\midterm\Debug\midterm.exe
+d:\github\oop_ldy\midterm\midterm\main.cpp(113): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
+d:\github\oop_ldy\midterm\midterm\main.cpp(121): warning C4309: '인수': 상수 값이 잘립니다.
+d:\github\oop_ldy\midterm\midterm\main.cpp(125): warning C4309: '인수': 상수 값이 잘립니다.
+d:\github\oop_ldy\midterm\midterm\main.cpp(132): warning C4309: '인수': 상수 값이 잘립니다.
+d:\github\oop_ldy\midterm\midterm\main.cpp(133): warning C4309: '인수': 상수 값이 잘립니다.
+  midterm.vcxproj -> D:\Github\OOP_LDY\midterm\Debug\midterm.exe

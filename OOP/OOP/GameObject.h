@@ -98,6 +98,9 @@ public:
 	}
 
 	const string getName() const { return name; }
+	const string getTag() const { return tag; }
+	GameObject* getParent() { return parent; }
 	void setHiddenflag(bool flag) { hideFlag = flag; }
+	bool getHiddenflag() { return hideFlag; }
 };
 

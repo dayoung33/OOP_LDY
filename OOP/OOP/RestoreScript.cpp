@@ -3,42 +3,38 @@
 #include "Screen.h"
 
 RestoreScript::RestoreScript(GameObject * gameObject)
-	:ClickableScript(gameObject)
+	:ClickableScript(gameObject),associated(nullptr)
 {
 }
 
 void RestoreScript::start()
 {
-	//setHiddenflag(true);
+	gameObject->setHiddenflag(true);
 }
 
 void RestoreScript::draw()
 {
 	Position pos = getTransform()->getPosition();
 	Position size = getTransform()->getSize();
-	getScreen().drawRectangle(Position{ pos.x - 1, pos.y - 1 }, Position{ size.x + 2, size.y + 2 });
-	getScreen().draw(Position{ pos.x + 1, pos.y + 1 }, gameObject->getName().c_str());
+	getScreen().drawRectangle(Position{ pos.x - 1, pos.y - 1 }, size);
+	getScreen().draw(Position{ pos.x + 1, pos.y }, gameObject->getName().c_str());
 }
 
-void RestoreScript::show()
+
+void RestoreScript::setObject(GameObject * associated)
 {
-	//gameObject->setHiddenflag(false);
-	//int numberOfRestoreButtons = 0;
-	//for (auto obj : restores) {
-	//	auto restoreButton = dynamic_cast<RestoreScript *>(obj);
-	//	if (restoreButton == nullptr) continue;
-	//	if (restoreButton->getHiddenflag() == false) numberOfRestoreButtons++;
-	//}
-	//this->setPos(Position{ (getScreen().getWidth() - 9), (getScreen().getHeight() - 2 - (numberOfRestoreButtons*2))});
+	this->associated = associated;
 }
 
 void RestoreScript::onClick()
 {
-	if (gameObject == nullptr) return;
+	if (associated == nullptr) return;
+	associated->setHiddenflag(false);
 	gameObject->setHiddenflag(true);
 }
 
 bool RestoreScript::isMatching(GameObject * associated)
 {
-	return associated == gameObject;
+	return associated == this->associated;
 }
+

@@ -1,22 +1,30 @@
 #include "MinimizeScript.h"
 #include "GameObject.h"
 #include "RestoreScript.h"
+#include "Screen.h"
 
 MinimizeScript::MinimizeScript(GameObject * gameObjcet)
-	:ClickableScript(gameObjcet)
+	:ClickableScript(gameObjcet), restore(nullptr)
 {
+	
+}
+void MinimizeScript::draw()
+{
+	Position size = getTransform()->getSize();
+	Position pos = getTransform()->getPosition();
+	getScreen().drawRectangle(Position{ pos.x , pos.y }, size);
+	getScreen().draw(Position{ pos.x + 2 , pos.y+1 }, "-");
+}
+
+void MinimizeScript::setRestore(GameObject * restore)
+{
+	this->restore = restore;
 }
 
 void MinimizeScript::onClick()
 {
 	if (gameObject == nullptr) return;
-	gameObject->setHiddenflag(true);
+	gameObject->getParent()->setHiddenflag(true);
+	restore->setHiddenflag(false);
 
-	//for (auto obj : restores) {
-	//	auto restore = dynamic_cast<RestoreScript*>(obj);
-	//	if (restore == nullptr) continue;
-	//	if (restore->isMatching(gameObject)) {
-	//		restore->show();
-	//	}
-	//}
 }

@@ -7,7 +7,6 @@ class Screen;
 class Component
 {
 protected:
-
 	GameObject* gameObject;
 	
 public:
