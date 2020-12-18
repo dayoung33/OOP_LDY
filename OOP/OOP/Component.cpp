@@ -12,4 +12,3 @@ Transform* Component::getTransform() const { return gameObject->transform; }
 InputManager& Component::getInputManager() const { return gameObject->inputManager; }
 
 Screen & Component::getScreen() const { return gameObject->screen; }
-

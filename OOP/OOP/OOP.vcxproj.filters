@@ -45,13 +45,13 @@
     <ClCompile Include="RotateScript.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="GridScript.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="ClickableScript.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MinimizeScript.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="RestoreScript.cpp">
+    <ClCompile Include="CellScript.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,13 +83,13 @@
     <ClInclude Include="RotateScript.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="GridScript.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="ClickableScript.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MinimizeScript.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="RestoreScript.h">
+    <ClInclude Include="CellScript.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

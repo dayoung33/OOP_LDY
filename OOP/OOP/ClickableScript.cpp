@@ -16,7 +16,12 @@ void ClickableScript::update()
 {
 	if (getInputManager().GetLeftMouseDown()) {
 		if (isOverlapped(getInputManager().mousePosition)) {
-			onClick();
+			onLeftButtonClick();
+		}
+	}
+	if (getInputManager().GetRightMouseDown()) {
+		if (isOverlapped(getInputManager().mousePosition)) {
+			onRightButtonClick();
 		}
 	}
 }
@@ -34,7 +39,7 @@ bool ClickableScript::isOverlapped(const Position & position, const Position & s
 {
 	Position pos = getTransform()->getPosition();
 	Position size = getTransform()->getSize();
-	return (pos.x <= position.x && position.x < pos.x + size.x+1)
+	return (pos.x <= position.x && position.x < pos.x + size.x)
 		&& (pos.y <= position.y && position.y < pos.y + size.y);
 	
 }

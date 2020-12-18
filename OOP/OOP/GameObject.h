@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <map>
 #include "Utils.h"
 
 using namespace std;
@@ -16,12 +17,17 @@ class InputManager;
 class GameObject
 {
 	string		name;
+	string		absolutePath;
 	string		tag;
 	bool		hideFlag;
+
+	bool		requestDestruction;
 
 	GameObject(const string& name, const string& tag,
 		GameObject* parent);
 
+	static map<string, vector<GameObject*>> objects;
+	
 protected:
 	Screen& screen;
 	Scene& scene;
@@ -39,16 +45,24 @@ protected:
 	void internalUpdate();
 	void internalDraw();
 
+public:
 	static GameObject* Instantiate(const string& name,
 		const string& tag = "Unknown", GameObject* parent = nullptr,
 		const Position& pos = Position{ 0, 0 },
 		const string& shape = "",
 		const Position& size = Position{1, 1}
 	);	
+
+
+	void setDestruction() { this->requestDestruction = true;  }
+
+	bool isRequestingDestruction() const { return this->requestDestruction;  }
 	
 public:
 	
 	~GameObject();
+
+	
 	
 	template<typename T>
 	void addComponent()
@@ -66,6 +80,10 @@ public:
 	{
 		for (auto component : components) {
 			auto found = dynamic_cast<T *>(component);
+			if (found) return found;
+		}
+		for (auto child : children) {
+			auto found = child->getComponent<T>();
 			if (found) return found;
 		}
 		return nullptr;
@@ -98,9 +116,16 @@ public:
 	}
 
 	const string getName() const { return name; }
-	const string getTag() const { return tag; }
 	GameObject* getParent() { return parent; }
-	void setHiddenflag(bool flag) { hideFlag = flag; }
-	bool getHiddenflag() { return hideFlag; }
+
+
+	static GameObject* Find(const string& name);
+
+	static void Add(GameObject* obj);
+
+	static void Remove(GameObject* obj);
+
+	static void Destroy(GameObject* obj);
+	
 };
 

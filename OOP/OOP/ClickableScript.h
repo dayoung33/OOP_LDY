@@ -19,7 +19,8 @@ public:
 	void draw() override;
 
 protected:
-	virtual void onClick() = 0;
+	virtual void onLeftButtonClick() = 0;
+	virtual void onRightButtonClick() = 0;
 	void setPos(Position pos);
 };
 

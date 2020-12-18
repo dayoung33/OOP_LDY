@@ -2,8 +2,8 @@
 #include "GameObject.h"
 #include "PanelScript.h"
 #include "RotateScript.h"
-#include "MinimizeScript.h"
-#include "RestoreScript.h"
+#include "GridScript.h"
+#include <algorithm>
 
 Scene::Scene() {
 }
@@ -15,48 +15,29 @@ Scene& Scene::getInstance() {
 
 void Scene::start() {
 	auto mainPanel = GameObject::Instantiate("mainPanel", "panel", nullptr,
-		Position{ 2, 2 }, "", Position{ 20, 20 });
-	mainPanel->addComponent<PanelScript>();	
-	auto mainPanelRestore = GameObject::Instantiate("mainRestore", "restore", nullptr,
-		Position{ 50,20 }, "", Position{ 17, 2 });
-	mainPanelRestore->addComponent<RestoreScript>();
-	mainPanelRestore->getComponent<RestoreScript>()->setObject(mainPanel);
-	auto mainPanelMinimaize = GameObject::Instantiate("mainMinimize", "minimize", mainPanel,
-		Position{ 23, 1 }, "", Position{ 4, 2 });
-	mainPanelMinimaize->addComponent<MinimizeScript>();
-	mainPanelMinimaize->getComponent<MinimizeScript>()->setRestore(mainPanelRestore);
+		Position{ 4, 3 }, "", Position{ 16, 16 });
+	mainPanel->addComponent<GridScript>();
 
-	auto movingBlock = GameObject::Instantiate("tetris block", "block", mainPanel,
-		Position{ 4, 2 }, "\xdb \xdb \xdb\xdb", Position{ 2, 3 } );
-	movingBlock->addComponent<RotateScript>();
-
-	auto nextPanel = GameObject::Instantiate("nextPanel", "panel", nullptr,
+	auto nextPanel = GameObject::Instantiate("Time", "panel", nullptr,
 		Position{ 30, 3 }, "", Position{ 10, 5 });
 	nextPanel->addComponent<PanelScript>();
-	auto nextPanelRestore = GameObject::Instantiate("nextRestore", "restore", nullptr,
-		Position{ 50,18 }, "", Position{ 17, 2 });
-	nextPanelRestore->addComponent<RestoreScript>();
-	nextPanelRestore->getComponent<RestoreScript>()->setObject(nextPanel);
-	auto nextPanelMinimaize = GameObject::Instantiate("nextMinimize", "minimize", nextPanel,
-		Position{ 41, 2 }, "", Position{ 4, 2 });
-	nextPanelMinimaize->addComponent<MinimizeScript>();
-	nextPanelMinimaize->getComponent<MinimizeScript>()->setRestore(nextPanelRestore);
 
-
-	auto staticBlock = GameObject::Instantiate("next block", "block", nextPanel,
-		Position{ 35, 4 }, "\xdb  \xdb\xdb\xdb  \xdb", Position{ 3, 3 } );
-
-	auto scorePanel = GameObject::Instantiate("scorePanel", "panel", nullptr,
+	auto scorePanel = GameObject::Instantiate("Mine", "panel", nullptr,
 		Position{ 30, 15 }, "", Position{ 10, 4 });
 	scorePanel->addComponent<PanelScript>();
-	auto scorePanelRestore = GameObject::Instantiate("scoreRestore", "restore", nullptr,
-		Position{ 50, 16 }, "", Position{ 17, 2 });
-	scorePanelRestore->addComponent<RestoreScript>();
-	scorePanelRestore->getComponent<RestoreScript>()->setObject(scorePanel);
-	auto scorePanelMinimaize = GameObject::Instantiate("scoreMinimize", "minimize", scorePanel,
-		Position{ 41, 14 }, "", Position{ 4, 2 });
-	scorePanelMinimaize->addComponent<MinimizeScript>();
-	scorePanelMinimaize->getComponent<MinimizeScript>()->setRestore(scorePanelRestore);
+
+	//auto found = GameObject::Find("block");				//block
+	//auto found2 = GameObject::Find("/next/block");		//block
+	//auto found3 = GameObject::Find("/next/block/block");//NULL
+	//auto found4 = GameObject::Find("main");				//main
+	//auto found5 = GameObject::Find("/main");			//main
+	//auto found6 = GameObject::Find("/main/another");	//NULL
+	//auto found7 = GameObject::Find("another");			//another
+	//auto found8 = GameObject::Find("");					//NULL
+	//
+	//GameObject::Remove(found7);							//remove another
+
+	//auto found10 = GameObject::Find("/next/another");	//NULL
 
 	for (auto gameObject : gameObjects) gameObject->internalStart();
 }
@@ -81,6 +62,15 @@ void Scene::remove(GameObject* go) {
 
 void Scene::update() {
 	for (auto gameObject : gameObjects) gameObject->internalUpdate();
+
+	// erase remove idiom
+	gameObjects.erase( remove_if(gameObjects.begin(), gameObjects.end(),
+		[&](auto item) { if (item->isRequestingDestruction() == false) return false;
+				GameObject::Remove(item);
+				delete item;				
+				return true;
+		} ),
+		gameObjects.cend());
 }
 
 void Scene::draw() {

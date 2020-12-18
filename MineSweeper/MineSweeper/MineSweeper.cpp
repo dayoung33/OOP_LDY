@@ -167,7 +167,7 @@ int MineSweeper::MineNumCheck(int index)
 	{
 		if (m_buffer[lt] == 9) mineCnt++;
 		if (m_buffer[t] == 9) mineCnt++;
-		if (m_buffer[r] == 9) mineCnt++;
+		if (m_buffer[l] == 9) mineCnt++;
 		return mineCnt;
 	}
 
