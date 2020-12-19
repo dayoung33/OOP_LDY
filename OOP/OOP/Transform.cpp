@@ -8,5 +8,5 @@ void Transform::update() {
 }
 
 void Transform::draw() {
-	(Screen::getInstance()).drawShape(pos, size, shape.c_str() );
+	//(Screen::getInstance()).drawShape(pos, size, shape.c_str() );
 }

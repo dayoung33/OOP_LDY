@@ -127,14 +127,19 @@
     <ClCompile Include="CellScript.cpp" />
     <ClCompile Include="ClickableScript.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="EndingScript.cpp" />
+    <ClCompile Include="ExitScript.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GridScript.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mineScript.cpp" />
     <ClCompile Include="PanelScript.cpp" />
+    <ClCompile Include="RestartScript.cpp" />
     <ClCompile Include="RotateScript.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="TimeScript.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
@@ -142,13 +147,18 @@
     <ClInclude Include="CellScript.h" />
     <ClInclude Include="ClickableScript.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="EndingScript.h" />
+    <ClInclude Include="ExitScript.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GridScript.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="mineScript.h" />
     <ClInclude Include="PanelScript.h" />
+    <ClInclude Include="RestartScript.h" />
     <ClInclude Include="RotateScript.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Screen.h" />
+    <ClInclude Include="TimeScript.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

@@ -3,6 +3,11 @@
 #include "PanelScript.h"
 #include "RotateScript.h"
 #include "GridScript.h"
+#include "mineScript.h"
+#include "TimeScript.h"
+#include "EndingScript.h"
+#include "RestartScript.h"
+#include "ExitScript.h"
 #include <algorithm>
 
 Scene::Scene() {
@@ -14,30 +19,33 @@ Scene& Scene::getInstance() {
 }
 
 void Scene::start() {
-	auto mainPanel = GameObject::Instantiate("mainPanel", "panel", nullptr,
-		Position{ 4, 3 }, "", Position{ 16, 16 });
+	auto mainPanel = GameObject::Instantiate("Grid", "panel", nullptr,
+		Position{ 0, 0 }, "", Position{ 16, 16 });
 	mainPanel->addComponent<GridScript>();
 
-	auto nextPanel = GameObject::Instantiate("Time", "panel", nullptr,
-		Position{ 30, 3 }, "", Position{ 10, 5 });
-	nextPanel->addComponent<PanelScript>();
+	auto timePanel = GameObject::Instantiate("Time", "panel", nullptr,
+		Position{ 18, 2 }, "", Position{ 10, 5 });
+	timePanel->addComponent<PanelScript>();
+	auto timeText = GameObject::Instantiate("timeText", "time", timePanel,
+		Position{ 20, 4 }, "0.0", Position{ 10, 4 });
+	timeText->addComponent<TimeScript>();
 
-	auto scorePanel = GameObject::Instantiate("Mine", "panel", nullptr,
-		Position{ 30, 15 }, "", Position{ 10, 4 });
-	scorePanel->addComponent<PanelScript>();
+	auto minePanel = GameObject::Instantiate("Mine", "panel", nullptr,
+		Position{ 18, 10 }, "", Position{ 10, 4 });
+	minePanel->addComponent<PanelScript>();
+	auto mineText = GameObject::Instantiate("MineText", "mine", minePanel,
+		Position{ 20, 12 }, "0", Position{ 10, 4 });
+	mineText->addComponent<mineScript>();
 
-	//auto found = GameObject::Find("block");				//block
-	//auto found2 = GameObject::Find("/next/block");		//block
-	//auto found3 = GameObject::Find("/next/block/block");//NULL
-	//auto found4 = GameObject::Find("main");				//main
-	//auto found5 = GameObject::Find("/main");			//main
-	//auto found6 = GameObject::Find("/main/another");	//NULL
-	//auto found7 = GameObject::Find("another");			//another
-	//auto found8 = GameObject::Find("");					//NULL
-	//
-	//GameObject::Remove(found7);							//remove another
-
-	//auto found10 = GameObject::Find("/next/another");	//NULL
+	auto endPanel = GameObject::Instantiate("Ending", "panel", nullptr,
+		Position{ 1, 18 }, "", Position{ 27, 5 });
+	endPanel->addComponent<EndingScript>();
+	auto restartbutton = GameObject::Instantiate("Restart", "button", endPanel,
+		Position{ 4, 20 }, "", Position{ 8, 2 });
+	restartbutton->addComponent<RestartScript>();
+	auto exittbutton = GameObject::Instantiate("Exit", "button", endPanel,
+		Position{ 17, 20 }, "", Position{ 8, 2 });
+	exittbutton->addComponent<ExitScript>();
 
 	for (auto gameObject : gameObjects) gameObject->internalStart();
 }
